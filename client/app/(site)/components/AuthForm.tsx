@@ -20,7 +20,7 @@ export const AuthForm = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const url = `${SERVER_URL}/auth/login/success`;
+        const url = `${SERVER_URL}/authorization`;
         const { data } = await axios.get(url, { withCredentials: true });
         console.log(data);
       } catch (error) {
@@ -161,6 +161,12 @@ export const AuthForm = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-2">
+          {/* <a className="w-full" href={`${SERVER_URL}/auth/github`}>
+            <AuthSocialButton
+              icon={BsGithub}
+              onClick={() => setIsLoading(true)}
+            />
+          </a> */}
           <a className="w-full" href={`${SERVER_URL}/auth/google`}>
             <AuthSocialButton
               icon={BsGoogle}

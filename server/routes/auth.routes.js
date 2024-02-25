@@ -5,6 +5,7 @@ const { handleSignUp, handleLogin } = require("../controllers/auth");
 const User = require("../models/user");
 const Account = require("../models/account");
 const cors = require("cors");
+const { setUser } = require("../services/auth");
 
 userRouter.use(
   cors({
@@ -27,30 +28,18 @@ userRouter
     })
   )
   .get("/success", async (req, res) => {
-    const { name, email, picture } = req.user._json;
-    try {
-      const user = await User.create({
-        name: name,
-        email: email,
-        image: picture,
-        account: true,
+    if (req.user) {
+      const user = await User.findOne({ email: req.user.emails[0].value });
+      const token = setUser(user);
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
       });
-      const googleAccount = await Account.create({
-        userId: user._id,
-        provider: req.user.provider,
-        providerAccountId: req.user.id,
-        type: "oauth",
-      });
-      if (googleAccount && user) {
-        return res.status(201).redirect(process.env.CLIENT_URL);
-      }
-    } catch (error) {
-      console.error("Error creating user or account:", error);
-      return res.status(500).json({ msg: "Internal Server Error" });
+      res.redirect(process.env.CLIENT_URL);
     }
   })
   .get("/failure", (req, res) => {
-    return res.status(401).json({ msg: "Authentication failed" });
+    return res.redirect(process.env.CLIENT_URL);
   })
   .get("/login/success", async (req, res) => {
     if (req.user) {

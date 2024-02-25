@@ -9,7 +9,6 @@ router
       const newConversation = await Conversation.create({
         members: [senderId, receiverId],
       });
-      console.log(newConversation);
       res.status(200).json({ msg: "New Conversation created successfully" });
     } catch (error) {
       res.status(500).json({ msg: error.message });

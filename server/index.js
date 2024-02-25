@@ -15,6 +15,7 @@ const passportConfig = require("./passport");
 const passport = require("passport");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const User = require("./models/user");
 
 passportConfig(passport);
 
@@ -55,12 +56,11 @@ app.use("/auth", authRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
 
-app.get("/authorization", (req, res) => {
+app.get("/authorization", async (req, res) => {
   const userToken = req.cookies?.token;
-  console.log(userToken);
   if (!userToken) return res.status(401).json({ msg: "Unauthorized" });
-  const user = getUser(userToken);
-  console.log(user);
+  const jwtUser = getUser(userToken);
+  const user = await User.findOne({ email: jwtUser.email });
   if (!user) return res.status(401).json({ msg: "Unauthorized" });
   return res.status(200).json({ user, msg: "Authorized" });
 });

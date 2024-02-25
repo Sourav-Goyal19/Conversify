@@ -57,7 +57,6 @@ userSchema.static(
   "matchPasswordAndGenerateToken",
   async function (email, password) {
     const user = await this.findOne({ email });
-    console.log(user);
     if (!user) throw new Error("User Not Found");
     const isMatch = await bcrypt.compare(password, user.hashedPassword);
     if (!isMatch) throw new Error("Incorrect Password");
