@@ -2,6 +2,15 @@ const express = require("express");
 const userRouter = express.Router();
 const passport = require("passport");
 const { handleSignUp, handleLogin } = require("../controllers/auth");
+const User = require("../models/user");
+const Account = require("../models/account");
+const cors = require("cors");
+
+userRouter.use(
+  cors({
+    origin: ["*", process.env.CLIENT_URL],
+  })
+);
 
 userRouter
   .post("/signup", handleSignUp)
@@ -17,16 +26,37 @@ userRouter
       failureRedirect: "/auth/failure",
     })
   )
-  .get("/success", (req, res) => {
-    if (req.user) {
-      console.log(req.user);
-      res.send(`Hey there, ${req.user.displayName}`);
+  .get("/success", async (req, res) => {
+    const { name, email, picture } = req.user._json;
+    try {
+      const user = await User.create({
+        name: name,
+        email: email,
+        image: picture,
+        account: true,
+      });
+      const googleAccount = await Account.create({
+        userId: user._id,
+        provider: req.user.provider,
+        providerAccountId: req.user.id,
+        type: "oauth",
+      });
+      if (googleAccount && user) {
+        return res.status(201).redirect(process.env.CLIENT_URL);
+      }
+    } catch (error) {
+      console.error("Error creating user or account:", error);
+      return res.status(500).json({ msg: "Internal Server Error" });
     }
   })
   .get("/failure", (req, res) => {
+    return res.status(401).json({ msg: "Authentication failed" });
+  })
+  .get("/login/success", (req, res) => {
     if (req.user) {
-      console.log(req.user);
-      res.send("Hey there");
+      res
+        .status(200)
+        .json({ msg: "User Logged In successfully", user: req.user });
     }
   });
 

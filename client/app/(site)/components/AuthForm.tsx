@@ -2,7 +2,7 @@
 
 import Button from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -12,9 +12,23 @@ import { toast } from "react-hot-toast";
 type Variant = "LOGIN" | "REGISTER";
 
 export const AuthForm = () => {
+  const SERVER_URL = "http://localhost:8000";
   axios.defaults.withCredentials = true;
   const [variant, setvariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const url = `${SERVER_URL}/auth/login/success`;
+        const { data } = await axios.get(url, { withCredentials: true });
+        console.log(data);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    getUser();
+  }, []);
 
   const toggleVariant = useCallback(() => {
     if (variant === "LOGIN") {
@@ -36,49 +50,68 @@ export const AuthForm = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
     if (variant === "REGISTER") {
-      try {
-        const res = await axios.post("http://localhost:8000/auth/signup", data);
-        if (res.status === 200) {
-          toast.success(res?.data.msg);
-          setvariant("LOGIN");
-          setIsLoading(false);
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const errorMessage: string = error.response?.data.msg;
-          setIsLoading(false);
-          toast.error(errorMessage);
-        }
-      }
+      axios
+        .post("http://localhost:8000/auth/signup", data)
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success(res?.data.msg);
+            setvariant("LOGIN");
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          if (axios.isAxiosError(error)) {
+            const errorMessage: string =
+              error.response?.data.msg || "Something Error Has Occured";
+            setIsLoading(false);
+            toast.error(errorMessage);
+          } else toast.error("Something went wrong");
+        });
     }
+
     if (variant === "LOGIN") {
-      try {
-        const res = await axios.post("http://localhost:8000/auth/login", data);
-        if (res.status === 200) {
-          toast.success(res?.data.msg);
-          setvariant("LOGIN");
-          setIsLoading(false);
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const errorMessage: string = error.response?.data.msg;
-          setIsLoading(false);
-          toast.error(errorMessage);
-        }
-      }
+      axios
+        .post("http://localhost:8000/auth/login", data)
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success(res?.data.msg);
+            setvariant("LOGIN");
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          if (axios.isAxiosError(error)) {
+            const errorMessage: string =
+              error.response?.data.msg || "Something Error Has Occured";
+            setIsLoading(false);
+            toast.error(errorMessage);
+          } else toast.error("Something went wrong");
+        });
     }
   };
 
-  const socialAction = (action: string) => {
-    setIsLoading(true);
-  };
+  // const socialAction = (action: string) => {
+  //   setIsLoading(true);
+  //   try {
+  //     if (action === "google") {
+  //       window.location.href = "http://localhost:8000/auth/google";
+  //     } else {
+  //       toast.error("Unsupported social action");
+  //       setIsLoading(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in socialAction:", error);
+  //     setIsLoading(false);
+  //     toast.error("Something went wrong");
+  //   }
+  // };
 
   return (
     <div className="mt-6 max-w-sm mx-auto sm:w-full sm:mx-auto sm:max-w-md">
-      <div className="bg-white dark:bg-[#001c3b] mx-4 sm:mx-0 shadow px-4 py-8 sm:rounded-lg sm:px-8">
+      <div className="bg-white dark:bg-[#001c3b] mx-4 sm:mx-0 shadow px-4 py-8 rounded-lg sm:px-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {variant === "REGISTER" && (
             <Input
@@ -128,14 +161,10 @@ export const AuthForm = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-2">
-          <AuthSocialButton
-            icon={BsGithub}
-            onClick={() => socialAction("github")}
-          />
-          <a className="w-full" href={`${process.env.SERVER_URL}/auth/google`}>
+          <a className="w-full" href={`${SERVER_URL}/auth/google`}>
             <AuthSocialButton
               icon={BsGoogle}
-              onClick={() => socialAction("google")}
+              onClick={() => setIsLoading(true)}
             />
           </a>
         </div>

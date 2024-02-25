@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const accountSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       onDelete: "CASCADE",
