@@ -56,6 +56,8 @@ userRouter
     if (req.user) {
       const user = await User.findOne({ email: req.user.emails[0].value });
       res.status(200).json({ msg: "User Logged In successfully", user: user });
+    } else {
+      res.status(401).json({ msg: "User Not Found" });
     }
   });
 
