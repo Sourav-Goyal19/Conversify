@@ -52,11 +52,10 @@ userRouter
   .get("/failure", (req, res) => {
     return res.status(401).json({ msg: "Authentication failed" });
   })
-  .get("/login/success", (req, res) => {
+  .get("/login/success", async (req, res) => {
     if (req.user) {
-      res
-        .status(200)
-        .json({ msg: "User Logged In successfully", user: req.user });
+      const user = await User.findOne({ email: req.user.emails[0].value });
+      res.status(200).json({ msg: "User Logged In successfully", user: user });
     }
   });
 
