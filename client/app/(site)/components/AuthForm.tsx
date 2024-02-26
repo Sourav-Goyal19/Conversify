@@ -1,9 +1,10 @@
 "use client";
 
-import Button from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Button from "@/app/components/Button";
+import { Input } from "@/app/components/Input";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
@@ -17,6 +18,7 @@ type Variant = "LOGIN" | "REGISTER";
 export const AuthForm = () => {
   const SERVER_URL = "http://localhost:8000";
   axios.defaults.withCredentials = true;
+  const router = useRouter();
   const [variant, setvariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
   const user = useAppSelector((state) => state.user.user);
@@ -27,7 +29,10 @@ export const AuthForm = () => {
       try {
         const url = `${SERVER_URL}/authorization`;
         const { data } = await axios.get(url, { withCredentials: true });
-        dispatch(setUser(data.user));
+        if (data) {
+          dispatch(setUser(data.user));
+          router.push("/users");
+        }
       } catch (error) {
         console.log("Error", error);
       }
@@ -83,7 +88,7 @@ export const AuthForm = () => {
         .then((res) => {
           if (res.status === 200) {
             toast.success(res?.data.msg);
-            setvariant("LOGIN");
+            router.push("/users");
             setIsLoading(false);
           }
         })
