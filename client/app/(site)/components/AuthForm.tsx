@@ -8,6 +8,9 @@ import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useAppSelector } from "@/app/redux/hooks";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/app/redux/slices/user/user/userSlice";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -16,13 +19,15 @@ export const AuthForm = () => {
   axios.defaults.withCredentials = true;
   const [variant, setvariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
+  const user = useAppSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const url = `${SERVER_URL}/authorization`;
         const { data } = await axios.get(url, { withCredentials: true });
-        console.log(data);
+        dispatch(setUser(data.user));
       } catch (error) {
         console.log("Error", error);
       }
@@ -147,7 +152,6 @@ export const AuthForm = () => {
             {variant === "LOGIN" ? "Sign In" : "Register"}
           </Button>
         </form>
-
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -161,12 +165,6 @@ export const AuthForm = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-2">
-          {/* <a className="w-full" href={`${SERVER_URL}/auth/github`}>
-            <AuthSocialButton
-              icon={BsGithub}
-              onClick={() => setIsLoading(true)}
-            />
-          </a> */}
           <a className="w-full" href={`${SERVER_URL}/auth/google`}>
             <AuthSocialButton
               icon={BsGoogle}
