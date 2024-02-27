@@ -1,5 +1,5 @@
 "use client";
-import useRoutes from "../hooks/useRoutes";
+import useRoutes from "../../hooks/useRoutes";
 import MobileItem from "./MobileItem";
 
 const MobileFooter = () => {

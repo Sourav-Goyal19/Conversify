@@ -10,6 +10,7 @@ const Avatar = () => {
           alt="Avatar"
           src={user?.image || "/images/user-avatar.jpeg"}
           fill
+          sizes="100%"
         />
       </div>
       <span className="absolute block top-0 right-0 bg-green-500 ring-2 ring-white rounded-full h-2 w-2 md:h-3 md:w-3" />
