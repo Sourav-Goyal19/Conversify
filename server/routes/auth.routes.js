@@ -1,7 +1,11 @@
 const express = require("express");
 const userRouter = express.Router();
 const passport = require("passport");
-const { handleSignUp, handleLogin } = require("../controllers/auth");
+const {
+  handleSignUp,
+  handleLogin,
+  handleLogout,
+} = require("../controllers/auth");
 const User = require("../models/user");
 const Account = require("../models/account");
 const cors = require("cors");
@@ -16,6 +20,7 @@ userRouter.use(
 userRouter
   .post("/signup", handleSignUp)
   .post("/login", handleLogin)
+  .get("/logout", handleLogout)
   .get(
     "/google",
     passport.authenticate("google", { scope: ["email", "profile"] })
