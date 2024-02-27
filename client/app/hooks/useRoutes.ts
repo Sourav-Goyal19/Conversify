@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useConversation from "./useConversation";
 import { HiChat } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
@@ -11,6 +11,7 @@ const SERVER_URL = "http://localhost:8000";
 
 const useRoutes = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { conversationId } = useConversation();
 
   const signOut = () => {
@@ -19,6 +20,7 @@ const useRoutes = () => {
       .then((res) => {
         if (res.status === 200) {
           toast.success(res.data.msg);
+          router.push("/");
         }
       })
       .catch((err) => {
@@ -43,7 +45,7 @@ const useRoutes = () => {
       },
       {
         label: "Logout",
-        href: "/",
+        href: "#",
         onClick: () => signOut(),
         icon: HiArrowLeftOnRectangle,
       },
