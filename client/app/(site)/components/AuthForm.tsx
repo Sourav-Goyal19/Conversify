@@ -75,7 +75,7 @@ export const AuthForm = () => {
         .catch((error) => {
           if (axios.isAxiosError(error)) {
             const errorMessage: string =
-              error.response?.data.msg || "Something Error Has Occured";
+              error.response?.data.msg || "Some Error Has Occured";
             setIsLoading(false);
             toast.error(errorMessage);
           } else toast.error("Something went wrong");
@@ -95,7 +95,7 @@ export const AuthForm = () => {
         .catch((error) => {
           if (axios.isAxiosError(error)) {
             const errorMessage: string =
-              error.response?.data.msg || "Something Error Has Occured";
+              error.response?.data.msg || "Some Error Has Occured";
             setIsLoading(false);
             toast.error(errorMessage);
           } else toast.error("Something went wrong");
