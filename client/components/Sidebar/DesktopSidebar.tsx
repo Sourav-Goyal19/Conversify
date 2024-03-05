@@ -3,12 +3,14 @@ import { useState } from "react";
 import useRoutes from "../../hooks/useRoutes";
 import DesktopItem from "./DesktopItem";
 import Avatar from "../Avatar";
+import { useAppSelector } from "@/redux/hooks";
 
 const DesktopSidebar = () => {
   const routes = useRoutes();
+  const user = useAppSelector((state) => state.user.user);
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="hidden lg:h-full lg:w-20 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:px-6 lg:overflow-y-auto lg:bg-white lg:dark:bg-[#001c3b] lg:border-r-[1px] lg:pb-4 lg:flex lg:flex-col justify-between">
+    <div className="hidden lg:h-full lg:w-20 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:px-6 lg:overflow-y-auto lg:bg-white lg:dark:bg-primary lg:border-r-[1px] lg:pb-4 lg:flex lg:flex-col lg:dark:border-r-slate-800 justify-between">
       <nav className="mt-4 flex flex-col justify-between">
         <ul role="list" className="flex flex-col items-center space-y-1">
           {routes.map((route) => (
@@ -28,7 +30,7 @@ const DesktopSidebar = () => {
           onClick={() => setIsOpen(true)}
           className="cursor-pointer hover:opacity-75 transition"
         >
-          <Avatar />
+          <Avatar image={user?.image} />
         </div>
       </nav>
     </div>

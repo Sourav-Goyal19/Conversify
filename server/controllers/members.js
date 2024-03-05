@@ -2,7 +2,6 @@ const User = require("../models/user");
 
 const getAllUsers = async (req, res) => {
   const email = req.query.email;
-  console.log(email);
   try {
     const allUsers = await User.find({ email: { $ne: email } });
     return res

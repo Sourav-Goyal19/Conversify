@@ -4,25 +4,60 @@ const router = express.Router();
 
 router
   .post("/", async (req, res) => {
-    const { senderId, receiverId } = req.body;
+    const { mainUserId, userId, isGroup, members, name } = req.body;
+    if (!mainUserId) {
+      return res.status(401).json({ msg: "Unauthorized User" });
+    }
+
+    if (isGroup && (!members || members.length < 0)) {
+      return res.status(400).json({ msg: "Invalid Data" });
+    }
+
+    // if (isGroup) {
+    //   const newConversation = await Conversation.create({
+    //     name,
+    //     isGroup,
+    //     userIds: [mainUserId, ...members.map((member) => {
+
+    //     })],
+    //   })
+    // }
+
     try {
-      const newConversation = await Conversation.create({
-        members: [senderId, receiverId],
+      const existingConversation = await Conversation.find({
+        userIds: { $all: [mainUserId, userId] },
       });
-      res.status(200).json({ msg: "New Conversation created successfully" });
+      const singleConversation = existingConversation[0];
+      if (singleConversation) {
+        return res.status(200).json({
+          msg: "Successfully Fetched",
+          conversation: singleConversation,
+        });
+      }
+
+      const newConversation = await Conversation.create({
+        userIds: [mainUserId, userId],
+      });
+      return res.status(200).json({
+        msg: "Conversation Created Successfully",
+        conversation: newConversation,
+      });
     } catch (error) {
-      res.status(500).json({ msg: error.message });
+      console.log(error);
+      return res.status(500).json({ msg: "Internal Server Error" });
     }
   })
-  .get("/:userId", async (req, res) => {
-    const userId = req.params.userId;
+  .get("/all", async (req, res) => {
+    const { userId } = req.query;
     try {
-      const conversations = await Conversation.find({
-        members: { $in: [userId] },
+      const conversations = await Conversation.find({ userIds: userId }).sort({
+        lastMessageAt: -1,
       });
-      res.status(200).json(conversations);
+
+      return res.status(200).json(conversations);
     } catch (error) {
-      res.status(500).json({ msg: error.message });
+      console.log(error);
+      return res.status(500).json({ msg: "Internal Server Error" });
     }
   });
 

@@ -3,15 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import Button from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
+import Button from "@/components/Button";
+import { Input } from "@/components/Input";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useAppSelector } from "@/app/redux/hooks";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/app/redux/slices/user/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setUser } from "@/redux/slices/user/user/userSlice";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -22,7 +21,7 @@ export const AuthForm = () => {
   const [variant, setvariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
   const user = useAppSelector((state) => state.user.user);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getUser = async () => {
@@ -121,7 +120,7 @@ export const AuthForm = () => {
 
   return (
     <div className="mt-6 max-w-sm mx-auto sm:w-full sm:mx-auto sm:max-w-md">
-      <div className="bg-white dark:bg-[#001c3b] mx-4 sm:mx-0 shadow px-4 py-8 rounded-lg sm:px-8">
+      <div className="bg-white dark:bg-secondary mx-4 sm:mx-0 shadow px-4 py-8 rounded-lg sm:px-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {variant === "REGISTER" && (
             <Input
@@ -163,7 +162,7 @@ export const AuthForm = () => {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white dark:bg-[#001c3b] px-2 text-gray-500 dark:text-gray-200">
+              <span className="bg-white dark:bg-secondary px-2 text-gray-500 dark:text-accent-4">
                 Or Contiue With
               </span>
             </div>
@@ -177,7 +176,7 @@ export const AuthForm = () => {
             />
           </a>
         </div>
-        <div className="mt-6 text-center text-gray-500 dark:text-gray-300 ">
+        <div className="mt-6 text-center text-gray-500 dark:text-accent-4 ">
           {variant === "LOGIN" ? "New Here?" : "Already Have An Account?"}
           <span
             onClick={toggleVariant}

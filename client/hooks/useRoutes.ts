@@ -19,8 +19,8 @@ const useRoutes = () => {
       .get(`${SERVER_URL}/auth/logout`)
       .then((res) => {
         if (res.status === 200) {
-          toast.success(res.data.msg);
           router.push("/");
+          toast.success(res.data.msg);
         }
       })
       .catch((err) => {
