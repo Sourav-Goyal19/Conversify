@@ -50,11 +50,26 @@ router
   .get("/all", async (req, res) => {
     const { userId } = req.query;
     try {
-      const conversations = await Conversation.find({ userIds: userId }).sort({
-        lastMessageAt: -1,
-      });
+      const conversations = await Conversation.find({
+        userIds: userId,
+      })
+        .populate("messages")
+        .populate("userIds")
+        .sort({ lastMessageAt: -1 });
 
       return res.status(200).json(conversations);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: "Internal Server Error" });
+    }
+  })
+  .get("/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const conversation = await Conversation.findById(id)
+        .populate("messages")
+        .populate("userIds");
+      return res.status(200).json(conversation);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: "Internal Server Error" });

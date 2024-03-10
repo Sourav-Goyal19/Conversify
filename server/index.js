@@ -54,7 +54,7 @@ app.use(express.static(path.resolve("./public")));
 app.use(express.json());
 
 app.use("/auth", authRouter);
-app.use("/message", messageRouter);
+app.use("/api/messages", messageRouter);
 app.use("/users", usersRouter);
 app.use("/api/conversations", conversationRouter);
 

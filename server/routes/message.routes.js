@@ -19,7 +19,10 @@ router
   .get("/:conversationId", async (req, res) => {
     const { conversationId } = req.params;
     try {
-      const messages = await Message.find({ conversationId });
+      const messages = await Message.find({ conversationId })
+        .populate("seen")
+        .populate("sender");
+      console.log(messages);
       res.status(200).json(messages);
     } catch (error) {
       res.status(500).json(error);

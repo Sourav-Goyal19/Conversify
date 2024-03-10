@@ -16,7 +16,7 @@ interface ConversationListProps {
 const SERVER_URL = "http://localhost:8000";
 
 const ConversationList: React.FC<ConversationListProps> = () => {
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState<any[]>([]);
   const user = useAppSelector((state) => state.user.user);
   const { isOpen, conversationId } = useConversation();
   const router = useRouter();
@@ -30,8 +30,8 @@ const ConversationList: React.FC<ConversationListProps> = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setConversations(res.data);
+        console.log(res.data);
       })
       .catch((err) => {
         toast.error(err.msg);
@@ -55,14 +55,14 @@ const ConversationList: React.FC<ConversationListProps> = () => {
             <MdOutlineGroupAdd size={22} />
           </div>
         </div>
+        {conversations.map((item, index) => (
+          <ConversationBox
+            key={index}
+            data={item}
+            selected={conversationId == item?._id}
+          />
+        ))}
       </div>
-      {conversations.map((item, index) => (
-        <ConversationBox
-          key={index}
-          // data={item}
-          // selected={conversationId == item?._id}
-        />
-      ))}
     </aside>
   );
 };
