@@ -1,24 +1,27 @@
 "use client";
 
+import EmptyStack from "@/components/EmptyStack";
 import { useAppSelector } from "@/redux/hooks";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Header from "./components/Header";
+import Body from "./components/Body";
+import Form from "./components/Form";
 
 interface IParams {
   conversationId: string;
 }
 
-const SERVER_URL = "http://localhost:8000";
-
 const ConversationId = ({ params }: { params: IParams }) => {
-  const [conversation, setConversation] = useState([]);
+  const [conversation, setConversation] = useState();
   const [messages, setMessages] = useState([]);
   const user = useAppSelector((state) => state.user.user);
-  console.log(user);
 
   useEffect(() => {
     axios
-      .get(`${SERVER_URL}/api/conversations/${params.conversationId}`)
+      .get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/${params.conversationId}`
+      )
       .then((res) => {
         console.log(res.data);
         setConversation(res.data);
@@ -28,7 +31,9 @@ const ConversationId = ({ params }: { params: IParams }) => {
       });
 
     axios
-      .get(`${SERVER_URL}/api/messages/${params.conversationId}`)
+      .get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages/${params.conversationId}`
+      )
       .then((res) => {
         console.log(res.data);
         setMessages(res.data);
@@ -38,7 +43,21 @@ const ConversationId = ({ params }: { params: IParams }) => {
       });
   }, []);
 
-  return <div>ConversationId</div>;
+  return conversation ? (
+    <div className=" lg:pl-80 h-full">
+      <div className="flex flex-col h-full">
+        <Header conversation={conversation} />
+        <Body />
+        <Form />
+      </div>
+    </div>
+  ) : (
+    <div className=" lg:pl-80 h-full">
+      <div className="flex flex-col h-full">
+        <EmptyStack />
+      </div>
+    </div>
+  );
 };
 
 export default ConversationId;

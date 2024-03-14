@@ -7,8 +7,6 @@ import { setUser } from "@/redux/slices/user/user/userSlice";
 import SideBar from "@/components/Sidebar/SideBar";
 import UsersList from "@/components/UsersList";
 
-const SERVER_URL = "http://localhost:8000";
-
 const UsersLayout = ({ children }: { children: React.ReactNode }) => {
   const [allUsers, setAllUsers] = useState([]);
   axios.defaults.withCredentials = true;
@@ -19,14 +17,13 @@ const UsersLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const url = `${SERVER_URL}/authorization`;
+        const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/authorization`;
         const { data } = await axios.get(url, { withCredentials: true });
         if (data) {
           dispatch(setUser(data.user));
-
           if (data?.user?.email) {
             axios
-              .get(`${SERVER_URL}/users/getallusers`, {
+              .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/getallusers`, {
                 params: { email: data.user?.email },
               })
               .then((res) => {

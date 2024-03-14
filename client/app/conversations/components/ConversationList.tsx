@@ -13,8 +13,6 @@ interface ConversationListProps {
   intialItems: any[];
 }
 
-const SERVER_URL = "http://localhost:8000";
-
 const ConversationList: React.FC<ConversationListProps> = () => {
   const [conversations, setConversations] = useState<any[]>([]);
   const user = useAppSelector((state) => state.user.user);
@@ -24,7 +22,7 @@ const ConversationList: React.FC<ConversationListProps> = () => {
   useEffect(() => {
     if (!user) return router.push("/");
     axios
-      .get(`${SERVER_URL}/api/conversations/all`, {
+      .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
         params: {
           userId: user._id,
         },

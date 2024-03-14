@@ -7,8 +7,6 @@ import { useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const SERVER_URL = "http://localhost:8000";
-
 const useRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -16,7 +14,7 @@ const useRoutes = () => {
 
   const signOut = () => {
     axios
-      .get(`${SERVER_URL}/auth/logout`)
+      .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/logout`)
       .then((res) => {
         if (res.status === 200) {
           router.push("/");

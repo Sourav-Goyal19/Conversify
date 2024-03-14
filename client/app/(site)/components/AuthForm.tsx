@@ -15,7 +15,6 @@ import { setUser } from "@/redux/slices/user/user/userSlice";
 type Variant = "LOGIN" | "REGISTER";
 
 export const AuthForm = () => {
-  const SERVER_URL = "http://localhost:8000";
   axios.defaults.withCredentials = true;
   const router = useRouter();
   const [variant, setvariant] = useState<Variant>("LOGIN");
@@ -26,7 +25,7 @@ export const AuthForm = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const url = `${SERVER_URL}/authorization`;
+        const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/authorization`;
         const { data } = await axios.get(url, { withCredentials: true });
         if (data) {
           dispatch(setUser(data.user));
@@ -169,7 +168,10 @@ export const AuthForm = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-2">
-          <a className="w-full" href={`${SERVER_URL}/auth/google`}>
+          <a
+            className="w-full"
+            href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`}
+          >
             <AuthSocialButton
               icon={BsGoogle}
               onClick={() => setIsLoading(true)}

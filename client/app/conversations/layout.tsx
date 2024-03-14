@@ -1,3 +1,4 @@
+"use client";
 import SideBar from "@/components/Sidebar/SideBar";
 import ConversationList from "./components/ConversationList";
 

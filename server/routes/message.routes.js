@@ -1,16 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const Message = require("../models/message");
+const Conversation = require("../models/conversation");
 
 router
   .post("/", async (req, res) => {
-    const { conversationId, sender, text } = req.body;
+    const { conversationId, sender, message } = req.body;
     try {
       const newMessage = await Message.create({
         conversationId,
         sender,
-        message: text,
+        body: message,
       });
+      const updatedConversation = await Conversation.findByIdAndUpdate(
+        conversationId,
+        { $push: { messages: newMessage._id } },
+        { new: true }
+      );
       res.status(200).json(newMessage);
     } catch (error) {
       res.status(500).json(error);
@@ -21,7 +27,8 @@ router
     try {
       const messages = await Message.find({ conversationId })
         .populate("seen")
-        .populate("sender");
+        .populate("sender")
+        .sort({ createdAt: 1 });
       console.log(messages);
       res.status(200).json(messages);
     } catch (error) {

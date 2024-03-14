@@ -9,8 +9,6 @@ interface UserBoxProps {
   user: any;
 }
 
-const SERVER_URL = "http://localhost:8000";
-
 const UserBox: React.FC<UserBoxProps> = ({ user }) => {
   const mainUser = useAppSelector((state) => state.user.user);
   const router = useRouter();
@@ -19,7 +17,7 @@ const UserBox: React.FC<UserBoxProps> = ({ user }) => {
     setIsLoading(true);
     axios
       .post(
-        `${SERVER_URL}/api/conversations/`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/`,
         {
           mainUserId: mainUser._id,
           userId: user._id,
@@ -38,7 +36,7 @@ const UserBox: React.FC<UserBoxProps> = ({ user }) => {
   }, []);
   return (
     <div
-      className="w-full relative flex items-center space-x-3 bg-white p-3 hover:bg-neutral-100 rounded-lg transition-none cursor-pointer dark:bg-transparent dark:hover:bg-secondary"
+      className="w-full relative flex items-center space-x-3 bg-white p-3 hover:bg-neutral-100 rounded-lg transition-none cursor-pointer dark:bg-transparent dark:hover:bg-tertiary"
       onClick={handleClick}
     >
       <Avatar image={user?.image} />
