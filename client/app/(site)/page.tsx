@@ -8,7 +8,9 @@ export default function Home() {
   axios.defaults.baseURL = "http://localhost:8000";
   return (
     <div className="flex flex-col justify-center min-h-screen py-12 sm:px-6 lg:px-8 bg-gray-100 dark:bg-primary">
-      <ThemeButton />
+      <div className="w-full flex justify-end">
+        <ThemeButton />
+      </div>
       <div className="sm:mx-auto sm:w-full sm:max-w-full">
         <Image
           height={50}

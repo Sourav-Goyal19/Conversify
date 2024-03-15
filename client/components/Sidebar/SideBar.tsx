@@ -1,7 +1,6 @@
 import React from "react";
 import DesktopSidebar from "./DesktopSidebar";
 import MobileFooter from "./MobileFooter";
-import ThemeButton from "../ThemeButton";
 
 const SideBar = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -9,7 +8,6 @@ const SideBar = ({ children }: { children: React.ReactNode }) => {
       <DesktopSidebar />
       <MobileFooter />
       <main className="h-full lg:pl-20">{children}</main>
-      <ThemeButton />
     </div>
   );
 };

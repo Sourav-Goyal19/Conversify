@@ -14,11 +14,17 @@ import { BsEmojiSmile } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { useAppSelector } from "@/redux/hooks";
+import { CldUploadButton } from "next-cloudinary";
 
 const Form = () => {
   const { conversationId } = useConversation();
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const user = useAppSelector((state) => state.user.user);
+  const theme = document.documentElement.contains(
+    document.querySelector(".dark")
+  )
+    ? "dark"
+    : "light";
   const {
     handleSubmit,
     register,
@@ -67,9 +73,24 @@ const Form = () => {
     console.log(data);
   };
 
+  function handleUpload(result: any) {
+    const image = result?.info?.secure_url;
+    axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`, {
+      image,
+      conversationId,
+      sender: user?._id,
+    });
+  }
+
   return (
-    <div className="p-4 bg-white border-t flex items-center gap-2 lg:gap-4 w-full z-20">
-      <HiPhoto size={30} className="text-sky-500 cursor-pointer" />
+    <div className="p-4 bg-white border-t flex items-center gap-2 lg:gap-4 w-full z-20 dark:bg-secondary dark:border-slate-800">
+      <CldUploadButton
+        options={{ maxFiles: 1 }}
+        onUpload={handleUpload}
+        uploadPreset="e9gou36i"
+      >
+        <HiPhoto size={30} className="text-sky-500 cursor-pointer" />
+      </CldUploadButton>
       <div className="relative">
         <Tippy content="Ctrl + ,">
           <div className="cursor-pointer text-sky-600 font-bold">
@@ -92,7 +113,7 @@ const Form = () => {
                 document.getElementById("message")?.focus();
               }}
               onClickOutside={() => setIsPickerVisible(false)}
-              theme="light"
+              theme={theme}
               icons="outline"
               previewPosition="none"
             />
@@ -110,12 +131,14 @@ const Form = () => {
           required={true}
           placeholder="Write a message"
         />
-        <button
-          type="submit"
-          className="rounded-full p-2 bg-sky-500 cursor-pointer hover:bg-sky-600 transition"
-        >
-          <HiPaperAirplane size={18} className="text-white" />
-        </button>
+        <Tippy content="Send">
+          <button
+            type="submit"
+            className="rounded-full p-3 bg-sky-500 cursor-pointer hover:bg-sky-600 transition dark:bg-primary dark:hover:bg-secondary "
+          >
+            <HiPaperAirplane size={18} className="text-white" />
+          </button>
+        </Tippy>
       </form>
     </div>
   );

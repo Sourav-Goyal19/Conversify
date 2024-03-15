@@ -20,7 +20,7 @@ const ThemeButton = () => {
   }, [darkMode]);
   return (
     <button
-      className=" fixed top-4 right-5 hover:bg-gray-200 dark:hover:bg-tertiary p-[10px] rounded-lg transition"
+      className="hover:bg-gray-200 dark:hover:bg-tertiary p-[10px] rounded-lg transition"
       onClick={() => setDarkMode(!darkMode)}
     >
       {darkMode ? <FiMoon size={20} color="white" /> : <IoIosSunny size={20} />}

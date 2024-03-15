@@ -4,6 +4,7 @@ import useRoutes from "../../hooks/useRoutes";
 import DesktopItem from "./DesktopItem";
 import Avatar from "../Avatar";
 import { useAppSelector } from "@/redux/hooks";
+import ThemeButton from "../ThemeButton";
 
 const DesktopSidebar = () => {
   const routes = useRoutes();
@@ -25,7 +26,8 @@ const DesktopSidebar = () => {
           ))}
         </ul>
       </nav>
-      <nav className=" mt-4 flex flex-col justify-between items-center">
+      <nav className=" mt-4 flex flex-col gap-4 justify-between items-center">
+        <ThemeButton />
         <div
           onClick={() => setIsOpen(true)}
           className="cursor-pointer hover:opacity-75 transition"

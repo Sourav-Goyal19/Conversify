@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
   }, [conversation]);
 
   return (
-    <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm dark:bg-primary">
+    <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm dark:bg-primary dark:border-b-[1px] dark:border-slate-800">
       <div className="flex items-center gap-3">
         <Link
           className=" lg:hidden block text-sky-500 hover:text-sky-600 transition cursor-pointer dark:text-accent-4"

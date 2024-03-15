@@ -5,12 +5,13 @@ const Conversation = require("../models/conversation");
 
 router
   .post("/", async (req, res) => {
-    const { conversationId, sender, message } = req.body;
+    const { conversationId, sender, message, image } = req.body;
     try {
       const newMessage = await Message.create({
         conversationId,
         sender,
         body: message,
+        image,
       });
       const updatedConversation = await Conversation.findByIdAndUpdate(
         conversationId,
@@ -29,7 +30,6 @@ router
         .populate("seen")
         .populate("sender")
         .sort({ createdAt: 1 });
-      console.log(messages);
       res.status(200).json(messages);
     } catch (error) {
       res.status(500).json(error);

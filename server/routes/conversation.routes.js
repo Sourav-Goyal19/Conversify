@@ -1,5 +1,6 @@
 const express = require("express");
 const Conversation = require("../models/conversation");
+const Message = require("../models/message");
 const router = express.Router();
 
 router
@@ -72,6 +73,40 @@ router
       return res.status(200).json(conversation);
     } catch (error) {
       console.log(error);
+      return res.status(500).json({ msg: "Internal Server Error" });
+    }
+  })
+  .post("/:conversationId/seen", async (req, res) => {
+    const { conversationId } = req.params;
+    const { currentUserId } = req.body;
+    if (!conversationId || !currentUserId)
+      return res.status(400).json({ msg: "Invalid Data" });
+    try {
+      const conversation = await Conversation.findById(conversationId)
+        .populate("messages")
+        .populate("userIds");
+      console.log("Conversation:", conversation);
+
+      if (!conversation) return res.status(400).json({ msg: "Invalid Id" });
+
+      const lastMessage =
+        conversation.messages[conversation.messages.length - 1];
+      console.log("Last Message: ", lastMessage);
+
+      if (!lastMessage) return res.status(400).json({ msg: "No Messages" });
+
+      if (lastMessage.seen.includes(currentUserId))
+        return res.status(200).json(lastMessage);
+
+      const updatedMessage = await Message.findByIdAndUpdate(
+        lastMessage?._id,
+        { $push: { seen: currentUserId } },
+        { new: true }
+      );
+      console.log("Updated Message: ", updatedMessage);
+
+      return res.status(200).json(updatedMessage);
+    } catch (error) {
       return res.status(500).json({ msg: "Internal Server Error" });
     }
   });
