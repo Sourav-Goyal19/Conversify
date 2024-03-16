@@ -2,8 +2,9 @@
 import Avatar from "@/components/Avatar";
 import { useAppSelector } from "@/redux/hooks";
 import Link from "next/link";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { HiChevronLeft, HiEllipsisHorizontal } from "react-icons/hi2";
+import ProfileDrawer from "./ProfileDrawer";
 
 interface HeaderProps {
   conversation: any;
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const user = useAppSelector((state) => state.user.user);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const otherUser = useMemo(() => {
     if (conversation.isGroup) {
@@ -27,30 +29,41 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
   }, [conversation]);
 
   return (
-    <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm dark:bg-primary dark:border-b-[1px] dark:border-slate-800">
-      <div className="flex items-center gap-3">
-        <Link
-          className=" lg:hidden block text-sky-500 hover:text-sky-600 transition cursor-pointer dark:text-accent-4"
-          href="/conversations"
-        >
-          <HiChevronLeft size={32} />
-        </Link>
-        <Avatar image={otherUser?.image} />
-        <div className="flex flex-col">
-          <div className=" dark:text-accent-3">
-            {conversation?.name || otherUser?.name}
-          </div>
-          <div className="text-sm font-light text-neutral-500 dark:text-accent-2">
-            {statusText}
+    <>
+      <ProfileDrawer
+        conversation={conversation}
+        isOpen={drawerOpen}
+        onClose={() => {
+          setDrawerOpen(false);
+        }}
+      />
+      <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm dark:bg-primary dark:border-b-[1px] dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <Link
+            className=" lg:hidden block text-sky-500 hover:text-sky-600 transition cursor-pointer dark:text-accent-4"
+            href="/conversations"
+          >
+            <HiChevronLeft size={32} />
+          </Link>
+          <Avatar image={otherUser?.image} />
+          <div className="flex flex-col">
+            <div className=" dark:text-accent-3">
+              {conversation?.name || otherUser?.name}
+            </div>
+            <div className="text-sm font-light text-neutral-500 dark:text-accent-2">
+              {statusText}
+            </div>
           </div>
         </div>
+        <HiEllipsisHorizontal
+          size={32}
+          onClick={() => {
+            setDrawerOpen(true);
+          }}
+          className="text-sky-500 cursor-pointer hover:text-sky-600 transition dark:text-accent-4"
+        />
       </div>
-      <HiEllipsisHorizontal
-        size={32}
-        onClick={() => {}}
-        className="text-sky-500 cursor-pointer hover:text-sky-600 transition dark:text-accent-4"
-      />
-    </div>
+    </>
   );
 };
 

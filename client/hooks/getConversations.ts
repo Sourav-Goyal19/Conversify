@@ -7,7 +7,7 @@ const getConversations = () => {
   axios
     .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
       params: {
-        userId: user._id,
+        userId: user?._id,
       },
     })
     .then((res) => {

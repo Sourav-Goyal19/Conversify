@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setUser } from "@/redux/slices/user/user/userSlice";
 import SideBar from "@/components/Sidebar/SideBar";
 import UsersList from "@/components/UsersList";
+import "tippy.js/dist/tippy.css";
 
 const UsersLayout = ({ children }: { children: React.ReactNode }) => {
   const [allUsers, setAllUsers] = useState([]);

@@ -109,6 +109,16 @@ router
     } catch (error) {
       return res.status(500).json({ msg: "Internal Server Error" });
     }
+  })
+  .delete("/:conversationId", async (req, res) => {
+    const { conversationId } = req.params;
+    try {
+      const conversation = await Conversation.findByIdAndDelete(conversationId);
+      return res.status(200).json(conversation);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: "Something Went Wrong" });
+    }
   });
 
 module.exports = router;

@@ -12,7 +12,6 @@ import { MdEmojiEmotions } from "react-icons/md";
 import { useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
 import { useAppSelector } from "@/redux/hooks";
 import { CldUploadButton } from "next-cloudinary";
 

@@ -19,8 +19,8 @@ const UserBox: React.FC<UserBoxProps> = ({ user }) => {
       .post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/`,
         {
-          mainUserId: mainUser._id,
-          userId: user._id,
+          mainUserId: mainUser?._id,
+          userId: user?._id,
         },
         { withCredentials: true }
       )

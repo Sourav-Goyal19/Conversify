@@ -71,7 +71,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
           <div className="flex justify-between items-center mb-1">
             <p className="text-base font-medium text-gray-900 dark:text-accent-3">
               {data.userIds.map((userId: any) =>
-                userId._id !== user._id ? userId.name : ""
+                userId?._id !== user?._id ? userId?.name : ""
               )}
             </p>
             {lastMessage?.createdAt && (
