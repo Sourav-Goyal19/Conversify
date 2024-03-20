@@ -119,7 +119,7 @@ export const AuthForm = () => {
 
   return (
     <div className="mt-6 max-w-sm mx-auto sm:w-full sm:mx-auto sm:max-w-md">
-      <div className="bg-white dark:bg-secondary mx-4 sm:mx-0 shadow px-4 py-8 rounded-lg sm:px-8">
+      <div className="bg-white dark:bg-secondary mx-4 sm:mx-0 shadow px-5 py-8 rounded-lg sm:px-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {variant === "REGISTER" && (
             <Input

@@ -7,6 +7,7 @@ const Avatar = ({ image }: { image: any }) => {
         <Image
           alt="Avatar"
           src={image || "/images/user-avatar.jpeg"}
+          className="object-cover"
           fill
           sizes="100%"
         />

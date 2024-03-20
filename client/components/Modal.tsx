@@ -38,12 +38,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
             >
               <Dialog.Panel
                 className={
-                  "relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xsl transition-all w-full sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+                  "relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 text-left shadow-xsl transition-all w-full sm:my-8 sm:w-full sm:max-w-lg sm:p-6 dark:bg-secondary"
                 }
               >
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block z-10">
                   <button
-                    className="rounded-md bg-white text-gray-400 hover:to-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+                    className="rounded-md bg-white text-gray-400 hover:to-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:bg-secondary dark:text-accent-2 dark:hover:text-accent-3"
                     onClick={onClose}
                   >
                     <span className="sr-only">Close</span>

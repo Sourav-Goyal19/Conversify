@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import Avatar from "./Avatar";
+import Avatar from "../../../components/Avatar";
 import axios from "axios";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector } from "../../../redux/hooks";
 
 interface UserBoxProps {
   user: any;
@@ -25,6 +25,7 @@ const UserBox: React.FC<UserBoxProps> = ({ user }) => {
         { withCredentials: true }
       )
       .then((res) => {
+        console.log(res);
         router.push(`/conversations/${res.data._id}`);
       })
       .catch((error) => {

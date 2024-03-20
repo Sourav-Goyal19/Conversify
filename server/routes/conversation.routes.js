@@ -10,7 +10,7 @@ router
       return res.status(401).json({ msg: "Unauthorized User" });
     }
 
-    if (isGroup && (!members || members.length < 0)) {
+    if (isGroup || (isGroup == true && (!members || members.length < 0))) {
       return res.status(400).json({ msg: "Invalid Data" });
     }
 
@@ -19,7 +19,6 @@ router
     //     name,
     //     isGroup,
     //     userIds: [mainUserId, ...members.map((member) => {
-
     //     })],
     //   })
     // }
@@ -30,19 +29,13 @@ router
       });
       const singleConversation = existingConversation[0];
       if (singleConversation) {
-        return res.status(200).json({
-          msg: "Successfully Fetched",
-          conversation: singleConversation,
-        });
+        return res.status(200).json(singleConversation);
       }
 
       const newConversation = await Conversation.create({
         userIds: [mainUserId, userId],
       });
-      return res.status(200).json({
-        msg: "Conversation Created Successfully",
-        conversation: newConversation,
-      });
+      return res.status(200).json(newConversation);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: "Internal Server Error" });

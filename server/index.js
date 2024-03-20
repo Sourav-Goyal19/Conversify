@@ -17,6 +17,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const User = require("./models/user");
 const usersRouter = require("./routes/users.routes");
+const settingsRouter = require("./routes/settings.routes");
 
 passportConfig(passport);
 
@@ -57,6 +58,7 @@ app.use("/auth", authRouter);
 app.use("/api/messages", messageRouter);
 app.use("/users", usersRouter);
 app.use("/api/conversations", conversationRouter);
+app.use("/api/settings", settingsRouter);
 
 app.get("/authorization", async (req, res) => {
   const userToken = req.cookies?.token;
