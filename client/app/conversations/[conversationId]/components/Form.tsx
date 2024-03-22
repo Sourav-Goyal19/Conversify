@@ -9,11 +9,11 @@ import { HiPhoto } from "react-icons/hi2";
 import MessageInput from "./MessageInput";
 import { HiPaperAirplane } from "react-icons/hi2";
 import { MdEmojiEmotions } from "react-icons/md";
-import { useState } from "react";
-import { BsEmojiSmile } from "react-icons/bs";
+import { useEffect, useState } from "react";
 import Tippy from "@tippyjs/react";
 import { useAppSelector } from "@/redux/hooks";
 import { CldUploadButton } from "next-cloudinary";
+import toast from "react-hot-toast";
 
 const Form = () => {
   const { conversationId } = useConversation();
@@ -24,6 +24,7 @@ const Form = () => {
   )
     ? "dark"
     : "light";
+
   const {
     handleSubmit,
     register,
@@ -64,11 +65,19 @@ const Form = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data: FieldValues) => {
     setValue("message", "", { shouldValidate: true });
-    axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`, {
-      ...data,
-      conversationId,
-      sender: user?._id,
-    });
+    axios
+      .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`, {
+        ...data,
+        conversationId,
+        sender: user?._id,
+      })
+      .then((res) => {
+        // socket.emit("new message", res.data);
+      })
+      .catch((error) => {
+        toast.error("Something went wrong");
+        console.log(error);
+      });
     console.log(data);
   };
 

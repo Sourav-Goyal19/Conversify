@@ -6,6 +6,7 @@ import { IoClose, IoTrash } from "react-icons/io5";
 import Avatar from "@/components/Avatar";
 import Modal from "@/components/Modal";
 import ConfirmModel from "./ConfirmModel";
+import ImageOpener from "@/components/ImageOpener";
 
 interface ProfileDrawerProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 }) => {
   const user = useAppSelector((state) => state.user.user);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
   const otherUser = conversation.userIds.find(
     (member: any) => member._id !== user?._id
   );
@@ -28,13 +30,18 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
     return format(new Date(otherUser?.createdAt), "PP");
   }, [otherUser?.createdAt]);
 
+  const groupCreatedDate = useMemo(() => {
+    if (conversation.isGroup)
+      return format(new Date(conversation?.createdAt), "PP");
+  }, [otherUser?.createdAt]);
+
   const title = useMemo(() => {
     return conversation?.name || otherUser?.name;
   }, [otherUser?.name, conversation?.name]);
 
   const statusText = useMemo(() => {
     if (conversation.isGroup) {
-      return `${conversation.usersIds.length} members`;
+      return `${conversation?.userIds?.length} members`;
     }
     return "Active";
   }, []);
@@ -46,6 +53,11 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
         onClose={() => {
           setConfirmOpen(false);
         }}
+      />
+      <ImageOpener
+        image={otherUser?.image}
+        isOpen={isImageOpen}
+        onClose={() => setIsImageOpen(false)}
       />
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -91,7 +103,10 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                       </div>
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
                         <div className="flex flex-col items-center">
-                          <div className="mb-2">
+                          <div
+                            className="mb-2"
+                            onClick={() => setIsImageOpen(true)}
+                          >
                             <Avatar image={otherUser?.image} />
                           </div>
                           <div className="dark:text-accent-3">{title}</div>
@@ -115,7 +130,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                           </div>
                           <div className="w-full pb-5 pt-5 sm:px-0 sm:pt-0">
                             <dl className="space-y-8 px-4 sm:space-y-6 sm:px-6">
-                              {!conversation.isGroup && (
+                              {!conversation.isGroup ? (
                                 <div>
                                   <dt className="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 dark:text-accent-3">
                                     Email
@@ -124,8 +139,19 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                     {otherUser.email}
                                   </dd>
                                 </div>
+                              ) : (
+                                <div>
+                                  <dt className="text-base font-medium text-gray-600 sm:w-40 sm:flex-shrink-0 dark:text-accent-3">
+                                    Members
+                                  </dt>
+                                  {conversation?.userIds?.map((user: any) => (
+                                    <dd className=" mt-1 text-sm text-gray-500 sm:col-span-2 dark:text-accent-2">
+                                      {user?.name}
+                                    </dd>
+                                  ))}
+                                </div>
                               )}
-                              {!conversation.isGroup && (
+                              {!conversation.isGroup ? (
                                 <>
                                   <hr />
                                   <div>
@@ -138,6 +164,18 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                       </time>
                                     </dd>
                                   </div>
+                                </>
+                              ) : (
+                                <>
+                                  <hr />
+                                  <dt className="text-sm font-medium text-gray-500 sm:flex-shrink-0 dark:text-accent-3">
+                                    Group Created At
+                                  </dt>
+                                  <dd className="text-sm text-gray-900 sm:col-span-2 dark:text-accent-2">
+                                    <time dateTime={groupCreatedDate}>
+                                      {groupCreatedDate}
+                                    </time>
+                                  </dd>
                                 </>
                               )}
                             </dl>

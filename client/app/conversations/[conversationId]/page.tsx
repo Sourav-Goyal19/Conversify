@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Body from "./components/Body";
 import Form from "./components/Form";
+import { useAppSelector } from "@/redux/hooks";
 
 interface IParams {
   conversationId: string;
@@ -13,7 +14,8 @@ interface IParams {
 
 const ConversationId = ({ params }: { params: IParams }) => {
   const [conversation, setConversation] = useState();
-  const [messages, setMessages] = useState([]);
+  const user = useAppSelector((state) => state.user.user);
+  const [messages, setMessages] = useState<any>([]);
 
   useEffect(() => {
     axios
@@ -32,6 +34,7 @@ const ConversationId = ({ params }: { params: IParams }) => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages/${params.conversationId}`
       )
       .then((res) => {
+        // console.log(res)
         setMessages(res.data);
       })
       .catch((err) => {

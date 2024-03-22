@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
-import { Input } from "@/components/Input";
+import { Input } from "@/components/Inputs/Input";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";

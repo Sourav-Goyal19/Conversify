@@ -10,23 +10,45 @@ router
       return res.status(401).json({ msg: "Unauthorized User" });
     }
 
-    if (isGroup || (isGroup == true && (!members || members.length < 0))) {
+    if (isGroup == true && (!members || members.length < 0)) {
       return res.status(400).json({ msg: "Invalid Data" });
     }
 
-    // if (isGroup) {
-    //   const newConversation = await Conversation.create({
-    //     name,
-    //     isGroup,
-    //     userIds: [mainUserId, ...members.map((member) => {
-    //     })],
-    //   })
-    // }
-
     try {
+      if (isGroup) {
+        const existingGroupConversation = await Conversation.find({
+          userIds: {
+            $all: [
+              mainUserId,
+              ...members.map((member) => {
+                return member.value;
+              }),
+            ],
+          },
+          name: name,
+        });
+
+        if (existingGroupConversation.length !== 0) {
+          return res.status(201).json(existingGroupConversation);
+        }
+
+        const newConversation = await Conversation.create({
+          name,
+          isGroup,
+          userIds: [
+            mainUserId,
+            ...members.map((member) => {
+              return member.value;
+            }),
+          ],
+        });
+        return res.status(200).json(newConversation);
+      }
+
       const existingConversation = await Conversation.find({
         userIds: { $all: [mainUserId, userId] },
       });
+
       const singleConversation = existingConversation[0];
       if (singleConversation) {
         return res.status(200).json(singleConversation);
@@ -78,13 +100,13 @@ router
       const conversation = await Conversation.findById(conversationId)
         .populate("messages")
         .populate("userIds");
-      console.log("Conversation:", conversation);
+      // console.log("Conversation:", conversation);
 
       if (!conversation) return res.status(400).json({ msg: "Invalid Id" });
 
       const lastMessage =
         conversation.messages[conversation.messages.length - 1];
-      console.log("Last Message: ", lastMessage);
+      // console.log("Last Message: ", lastMessage);
 
       if (!lastMessage) return res.status(400).json({ msg: "No Messages" });
 
@@ -96,7 +118,7 @@ router
         { $push: { seen: currentUserId } },
         { new: true }
       );
-      console.log("Updated Message: ", updatedMessage);
+      // console.log("Updated Message: ", updatedMessage);
 
       return res.status(200).json(updatedMessage);
     } catch (error) {

@@ -3,9 +3,10 @@
 import { format } from "date-fns";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { use, useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import Avatar from "@/components/Avatar";
+import io from "socket.io-client";
 
 interface ConversationBoxProps {
   data: any;
@@ -18,7 +19,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
 }) => {
   const router = useRouter();
   const user = useAppSelector((state) => state.user.user);
-  console.log(data);
+  // console.log(data);
+
   const handleClick = useCallback(() => {
     router.push(`/conversations/${data._id}`);
   }, [router, data._id]);
@@ -49,6 +51,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   }, [lastMessage, user?._id]);
 
   const userProfileImage = useMemo(() => {
+    if (data.isGroup) return;
     const image = data.userIds.map((userId: any) => {
       if (userId._id !== user?._id) {
         return userId.image;
@@ -69,10 +72,12 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <div className="flex justify-between items-center mb-1">
-            <p className="text-base font-medium text-gray-900 dark:text-accent-3">
-              {data.userIds.map((userId: any) =>
-                userId?._id !== user?._id ? userId?.name : ""
-              )}
+            <p className="text-base font-medium text-gray-900 dark:text-accent-3 capitalize">
+              {data.isGroup
+                ? data.name
+                : data.userIds.map((userId: any) =>
+                    userId?._id !== user?._id ? userId?.name : ""
+                  )}
             </p>
             {lastMessage?.createdAt && (
               <p className="text-xs text-gray-400 font-light">

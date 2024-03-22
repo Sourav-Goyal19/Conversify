@@ -10,7 +10,7 @@ const cors = require("cors");
 const { getUser } = require("./services/auth");
 const conversationRouter = require("./routes/conversation.routes");
 const messageRouter = require("./routes/message.routes");
-const ws = require("ws");
+const Conversation = require("./models/conversation");
 const passportConfig = require("./passport");
 const passport = require("passport");
 const session = require("express-session");
@@ -73,9 +73,39 @@ const server = app.listen(PORT, () => {
   console.log(`Server Started at ${PORT}`);
 });
 
-const wss = new ws.Server({ server });
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+// const wss = new ws.WebSocketServer({ server });
 
-wss.on("connection", (connection) => {
-  console.log("Connected");
-  connection.send("Hello");
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+
+  socket.on("setup", (user) => {
+    socket.join(user?._id);
+    socket.emit("connected");
+    console.log(user?._id);
+  });
+
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("user joined room " + room);
+  });
+
+  socket.on("new message", async (newMessageRecieved) => {
+    const conversation = newMessageRecieved?.conversationId;
+    console.log("Socket new Message", newMessageRecieved);
+    if (conversation?.userIds?.length < 2) {
+      return console.log("conversation.userIds not defined");
+    }
+
+    conversation?.userIds?.forEach((user) => {
+      if (user?._id === newMessageRecieved?.sender?._id) return;
+
+      socket.in(user?._id).emit("message recieved", newMessageRecieved);
+    });
+  });
 });

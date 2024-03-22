@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { HiChevronLeft, HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
+import ImageOpener from "@/components/ImageOpener";
 
 interface HeaderProps {
   conversation: any;
@@ -13,17 +14,20 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const user = useAppSelector((state) => state.user.user);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  // console.log(conversation);
 
   const otherUser = useMemo(() => {
     if (conversation.isGroup) {
-      return conversation.userIds.find((u: any) => u?._id !== user?._id);
+      return;
+      // return conversation.userIds.find((u: any) => u?._id !== user?._id);
     }
     return conversation.userIds.find((u: any) => u?._id !== user?._id);
   }, [conversation]);
 
   const statusText = useMemo(() => {
     if (conversation.isGroup) {
-      return `${conversation.users.length} members`;
+      return `${conversation?.userIds?.length} members`;
     }
     return "Active";
   }, [conversation]);
@@ -37,6 +41,11 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           setDrawerOpen(false);
         }}
       />
+      <ImageOpener
+        image={otherUser?.image}
+        isOpen={isImageOpen}
+        onClose={() => setIsImageOpen(false)}
+      />
       <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm dark:bg-primary dark:border-b-[1px] dark:border-slate-800">
         <div className="flex items-center gap-3">
           <Link
@@ -46,7 +55,10 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             <HiChevronLeft size={32} />
           </Link>
           <Avatar image={otherUser?.image} />
-          <div className="flex flex-col">
+          <div
+            onClick={() => setIsImageOpen(true)}
+            className="flex flex-col cursor-default"
+          >
             <div className=" dark:text-accent-3">
               {conversation?.name || otherUser?.name}
             </div>
