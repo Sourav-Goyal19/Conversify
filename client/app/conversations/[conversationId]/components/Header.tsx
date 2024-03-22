@@ -6,6 +6,7 @@ import React, { useMemo, useState } from "react";
 import { HiChevronLeft, HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
 import ImageOpener from "@/components/ImageOpener";
+import AvatarGroup from "@/components/AvatarGroup";
 
 interface HeaderProps {
   conversation: any;
@@ -15,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const user = useAppSelector((state) => state.user.user);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
-  // console.log(conversation);
+  console.log(conversation);
 
   const otherUser = useMemo(() => {
     if (conversation.isGroup) {
@@ -54,7 +55,11 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           >
             <HiChevronLeft size={32} />
           </Link>
-          <Avatar image={otherUser?.image} />
+          {conversation?.isGroup ? (
+            <AvatarGroup users={conversation?.userIds} />
+          ) : (
+            <Avatar image={otherUser?.image} />
+          )}
           <div
             onClick={() => setIsImageOpen(true)}
             className="flex flex-col cursor-default"

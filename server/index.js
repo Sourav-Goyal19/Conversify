@@ -79,7 +79,6 @@ const io = require("socket.io")(server, {
     origin: "http://localhost:3000",
   },
 });
-// const wss = new ws.WebSocketServer({ server });
 
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");
@@ -87,7 +86,7 @@ io.on("connection", (socket) => {
   socket.on("setup", (user) => {
     socket.join(user?._id);
     socket.emit("connected");
-    console.log(user?._id);
+    console.log("User Id", user?._id);
   });
 
   socket.on("join chat", (room) => {
@@ -102,10 +101,10 @@ io.on("connection", (socket) => {
       return console.log("conversation.userIds not defined");
     }
 
-    conversation?.userIds?.forEach((user) => {
-      if (user?._id === newMessageRecieved?.sender?._id) return;
-
-      socket.in(user?._id).emit("message recieved", newMessageRecieved);
+    conversation?.userIds?.forEach((userId) => {
+      // if (userId === newMessageRecieved?.sender?._id) return;
+      console.log(userId);
+      socket.in(userId).emit("message recieved", newMessageRecieved);
     });
   });
 });

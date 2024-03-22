@@ -7,6 +7,7 @@ import Avatar from "@/components/Avatar";
 import Modal from "@/components/Modal";
 import ConfirmModel from "./ConfirmModel";
 import ImageOpener from "@/components/ImageOpener";
+import AvatarGroup from "@/components/AvatarGroup";
 
 interface ProfileDrawerProps {
   isOpen: boolean;
@@ -107,7 +108,11 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                             className="mb-2"
                             onClick={() => setIsImageOpen(true)}
                           >
-                            <Avatar image={otherUser?.image} />
+                            {conversation?.isGroup ? (
+                              <AvatarGroup users={conversation?.userIds} />
+                            ) : (
+                              <Avatar image={otherUser?.image} />
+                            )}
                           </div>
                           <div className="dark:text-accent-3">{title}</div>
                           <div className="text-sm text-gray-500 dark:text-accent-2">

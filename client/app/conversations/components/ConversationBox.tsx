@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import Avatar from "@/components/Avatar";
 import io from "socket.io-client";
+import AvatarGroup from "@/components/AvatarGroup";
 
 interface ConversationBoxProps {
   data: any;
@@ -19,7 +20,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
 }) => {
   const router = useRouter();
   const user = useAppSelector((state) => state.user.user);
-  // console.log(data);
+  console.log(data);
 
   const handleClick = useCallback(() => {
     router.push(`/conversations/${data._id}`);
@@ -57,7 +58,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         return userId.image;
       }
     });
-    return image[0];
+    return image[0] ? image[0] : image[1];
   }, []);
 
   return (
@@ -68,7 +69,11 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         selected ? "bg-neutral-100" : "bg-white"
       )}
     >
-      <Avatar image={userProfileImage} />
+      {data?.isGroup ? (
+        <AvatarGroup users={data.userIds} />
+      ) : (
+        <Avatar image={userProfileImage} />
+      )}
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <div className="flex justify-between items-center mb-1">

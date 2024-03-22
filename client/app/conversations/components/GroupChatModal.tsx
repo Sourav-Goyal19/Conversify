@@ -115,7 +115,11 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
               disabled={isLoading}
               type="button"
               secondary
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                setValue("name", "");
+                setValue("members", []);
+              }}
             >
               Cancel
             </Button>
