@@ -18,7 +18,6 @@ const bodyParser = require("body-parser");
 const User = require("./models/user");
 const usersRouter = require("./routes/users.routes");
 const settingsRouter = require("./routes/settings.routes");
-// const pusherServer = require("./services/pusher");
 
 passportConfig(passport);
 
@@ -65,19 +64,8 @@ app.get("/authorization", async (req, res) => {
   const userToken = req.cookies?.token;
   if (!userToken) return res.status(401).json({ msg: "Unauthorized" });
   const jwtUser = getUser(userToken);
-  // const user = await User.findOneAndUpdate(
-  //   { email: jwtUser.email },
-  //   { online: true }
-  // );
-
+  const user = await User.findOne({ email: jwtUser.email });
   if (!user) return res.status(401).json({ msg: "Unauthorized" });
-
-  // const allUsers = await User.find();
-  // console.log(user);
-  // allUsers.forEach((eachUser) => {
-  //   pusherServer.trigger(eachUser?.email, "online", user);
-  // });
-
   return res.status(200).json({ user, msg: "Authorized" });
 });
 

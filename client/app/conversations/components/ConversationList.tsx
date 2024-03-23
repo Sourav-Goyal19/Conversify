@@ -41,7 +41,6 @@ const ConversationList: React.FC<ConversationListProps> = () => {
       .then((res) => {
         if (res.data.length < 1) return router.push("/users");
         setConversations(res.data);
-        // console.log(res.data);
       })
       .catch((err) => {
         toast.error(err.msg);
@@ -121,28 +120,6 @@ const ConversationList: React.FC<ConversationListProps> = () => {
       pusherClient.unbind("conversation:update", conversationUpdateHandler);
     };
   }, [pusherKey]);
-
-  // useEffect(() => {
-  //   if (conversationId.length > 0) {
-  //     const handleOnline = (user: any) => {
-  //       setConversations((prevConversations: any) => {
-  //         return prevConversations.map((conversation: any) => {
-  //           conversation.userIds.map((user: any) => {
-  //             if (user.email === user?.email) {
-  //               user.online = true;
-  //             }
-  //             return user;
-  //           });
-  //         });
-  //       });
-  //       pusherClient.subscribe(user?.email);
-  //       pusherClient.bind("presence-channel", handleOnline);
-  //     };
-  //   }
-  //   return () => {
-  //     pusherClient.unbind("presence-channel");
-  //   };
-  // }, [allUsers]);
 
   return (
     <>

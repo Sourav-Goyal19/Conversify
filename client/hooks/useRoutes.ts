@@ -6,16 +6,13 @@ import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
 import { useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-// import { useAppSelector } from "@/redux/hooks";
 
 const useRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { conversationId } = useConversation();
-  // const user = useAppSelector((state) => state.user.user);
 
   const signOut = () => {
-    // console.log(user);
     axios
       .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/logout`)
       .then((res) => {

@@ -1,5 +1,4 @@
 const User = require("../models/user");
-const pusherServer = require("../services/pusher");
 
 async function handleSignUp(req, res) {
   const { name, email, password } = req.body;
@@ -34,17 +33,6 @@ async function handleLogin(req, res) {
 }
 
 async function handleLogout(req, res) {
-  const { user } = req.query;
-  const existingUser = await User.findOneAndUpdate(
-    { email: user?.email },
-    { $set: { online: false } }
-  );
-
-  const allUsers = await User.find();
-  allUsers.forEach((eachUser) => {
-    pusherServer.trigger(eachUser?.email, "online", existingUser);
-  });
-
   res.clearCookie("token");
   res.status(200).json({ msg: "Logout Successful" });
 }
