@@ -65,6 +65,17 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     return image[0] ? image[0] : image[1];
   }, []);
 
+  // const userOnlineStatus = useMemo(() => {
+  //   if (data.isGroup) return;
+  //   const onlineStatus = data.userIds.map((userId: any) => {
+  //     if (userId._id !== user?._id) {
+  //       return userId.online;
+  //     }
+  //   });
+
+  //   return onlineStatus[0] != undefined ? onlineStatus[0] : onlineStatus[1];
+  // }, []);
+
   return (
     <div
       onClick={handleClick}

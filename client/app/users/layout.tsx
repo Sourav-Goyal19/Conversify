@@ -7,6 +7,7 @@ import { setUser } from "@/redux/slices/user/user/userSlice";
 import SideBar from "@/components/Sidebar/SideBar";
 import UsersList from "@/app/users/components/UsersList";
 import "tippy.js/dist/tippy.css";
+// import { pusherClient } from "../libs/pusher";
 
 const UsersLayout = ({ children }: { children: React.ReactNode }) => {
   const [allUsers, setAllUsers] = useState([]);
@@ -29,7 +30,6 @@ const UsersLayout = ({ children }: { children: React.ReactNode }) => {
               })
               .then((res) => {
                 setAllUsers(res.data.users);
-                console.log(res.data.users);
               })
               .catch((err) => {
                 console.log(err);
@@ -42,6 +42,27 @@ const UsersLayout = ({ children }: { children: React.ReactNode }) => {
     };
     fetchUsers();
   }, []);
+
+  // useEffect(() => {
+  //   const handleOnline = (recievedUser: any) => {
+  //     console.log(recievedUser);
+  //     setAllUsers((prevUsers: any) => {
+  //       return prevUsers.map((prevUser: any) => {
+  //         if (prevUser?._id === recievedUser._id) {
+  //           return recievedUser;
+  //         }
+  //         return prevUser;
+  //       });
+  //     });
+  //     pusherClient.subscribe(user?.email);
+  //     pusherClient.bind("online", handleOnline);
+  //   };
+  //   return () => {
+  //     pusherClient.unsubscribe(user?.email);
+  //     pusherClient.unbind("online");
+  //   };
+  // }, []);
+
   return (
     <div className="h-full">
       <SideBar>
