@@ -4,13 +4,15 @@ import { useAppSelector } from "@/redux/hooks";
 import axios from "axios";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import toast from "react-hot-toast";
 import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/user/user/userSlice";
+import { pusherClient } from "@/app/libs/pusher";
+import { find } from "lodash";
 
 interface ConversationListProps {
   intialItems: any[];
@@ -20,14 +22,16 @@ const ConversationList: React.FC<ConversationListProps> = () => {
   const { isOpen, conversationId } = useConversation();
   const [conversations, setConversations] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState([]);
-  const [items, setItems] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const pusherKey = useMemo(() => {
+    return user?.email;
+  }, []);
+
   useEffect(() => {
-    if (!user) return router.push("/");
     axios
       .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
         params: {
@@ -35,8 +39,8 @@ const ConversationList: React.FC<ConversationListProps> = () => {
         },
       })
       .then((res) => {
+        if (res.data.length < 1) return router.push("/users");
         setConversations(res.data);
-        // console.log(res.data);
       })
       .catch((err) => {
         toast.error(err.msg);
@@ -56,7 +60,6 @@ const ConversationList: React.FC<ConversationListProps> = () => {
               })
               .then((res) => {
                 setAllUsers(res.data.users);
-                console.log(res.data.users);
               })
               .catch((err) => {
                 console.log(err);
@@ -69,6 +72,54 @@ const ConversationList: React.FC<ConversationListProps> = () => {
     };
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (!pusherKey) return;
+    pusherClient.subscribe(pusherKey);
+
+    const newConversationHandler = (newConversation: any) => {
+      setConversations((prev) => {
+        if (find(prev, { _id: newConversation?._id })) {
+          return prev;
+        }
+        return [newConversation, ...prev];
+      });
+    };
+
+    const deletedConversationHandler = (deletedConversation: any) => {
+      setConversations((prev) => {
+        return prev.filter((conversation) => {
+          return conversation._id !== deletedConversation._id;
+        });
+      });
+    };
+
+    const conversationUpdateHandler = (updatedConversation: any) => {
+      console.log(updatedConversation);
+      setConversations((prev) => {
+        return prev.map((conversation: any) => {
+          if (conversation._id === updatedConversation._id) {
+            return {
+              ...conversation,
+              messages: updatedConversation.messages,
+            };
+          }
+          return conversation;
+        });
+      });
+    };
+
+    pusherClient.bind("conversation:new", newConversationHandler);
+    pusherClient.bind("conversation:delete", deletedConversationHandler);
+    pusherClient.bind("conversation:update", conversationUpdateHandler);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("conversation:new", newConversationHandler);
+      pusherClient.unbind("conversation:delete", deletedConversationHandler);
+      pusherClient.unbind("conversation:update", conversationUpdateHandler);
+    };
+  }, [pusherKey]);
 
   return (
     <>

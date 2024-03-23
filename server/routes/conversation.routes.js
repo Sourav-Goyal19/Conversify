@@ -1,6 +1,7 @@
 const express = require("express");
 const Conversation = require("../models/conversation");
 const Message = require("../models/message");
+const pusherServer = require("../services/pusher");
 const router = express.Router();
 
 router
@@ -32,7 +33,7 @@ router
           return res.status(201).json(existingGroupConversation);
         }
 
-        const newConversation = await Conversation.create({
+        const newGroupConversation = await Conversation.create({
           name,
           isGroup,
           userIds: [
@@ -41,23 +42,56 @@ router
               return member.value;
             }),
           ],
+        }).then((conversation) => {
+          return conversation.populate("userIds");
         });
+
+        console.log("New Group Conversation", newGroupConversation);
+
+        newGroupConversation.userIds.forEach((user) => {
+          if (user.email) {
+            pusherServer.trigger(
+              user.email,
+              "conversation:new",
+              newGroupConversation
+            );
+          }
+        });
+
+        return res.status(200).json(newGroupConversation);
+      } else {
+        const existingConversation = await Conversation.find({
+          $and: [
+            { userIds: mainUserId },
+            { userIds: userId },
+            { isGroup: false },
+          ],
+        });
+
+        if (existingConversation.length > 0) {
+          return res.status(200).json(existingConversation[0]);
+        }
+
+        const newConversation = await Conversation.create({
+          userIds: [mainUserId, userId],
+          isGroup: false,
+        }).then((conversation) => {
+          return conversation.populate("userIds");
+        });
+
+        console.log("New Conversation", newConversation);
+        newConversation.userIds.map((user) => {
+          if (user.email) {
+            pusherServer.trigger(
+              user.email,
+              "conversation:new",
+              newConversation
+            );
+          }
+        });
+
         return res.status(200).json(newConversation);
       }
-
-      const existingConversation = await Conversation.find({
-        userIds: { $all: [mainUserId, userId] },
-      });
-
-      const singleConversation = existingConversation[0];
-      if (singleConversation) {
-        return res.status(200).json(singleConversation);
-      }
-
-      const newConversation = await Conversation.create({
-        userIds: [mainUserId, userId],
-      });
-      return res.status(200).json(newConversation);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: "Internal Server Error" });
@@ -69,7 +103,12 @@ router
       const conversations = await Conversation.find({
         userIds: userId,
       })
-        .populate("messages")
+        .populate({
+          path: "messages",
+          populate: {
+            path: "seen",
+          },
+        })
         .populate("userIds")
         .sort({ lastMessageAt: -1 });
 
@@ -117,8 +156,21 @@ router
         lastMessage?._id,
         { $push: { seen: currentUserId } },
         { new: true }
+      )
+        .populate("seen")
+        .populate("sender")
+        .populate("conversationId");
+
+      await pusherServer.trigger(conversationId, "conversation:update", {
+        _id: conversationId,
+        messages: [updatedMessage],
+      });
+
+      await pusherServer.trigger(
+        conversationId,
+        "message:update",
+        updatedMessage
       );
-      // console.log("Updated Message: ", updatedMessage);
 
       return res.status(200).json(updatedMessage);
     } catch (error) {
@@ -128,8 +180,24 @@ router
   .delete("/:conversationId", async (req, res) => {
     const { conversationId } = req.params;
     try {
-      const conversation = await Conversation.findByIdAndDelete(conversationId);
-      return res.status(200).json(conversation);
+      const deletedConversation = await Conversation.findByIdAndDelete(
+        conversationId
+      ).populate("userIds");
+
+      if (!deletedConversation)
+        return res.status(400).json({ msg: "Invalid Id" });
+
+      deletedConversation.userIds.map((user) => {
+        if (user.email) {
+          pusherServer.trigger(
+            user.email,
+            "conversation:delete",
+            deletedConversation
+          );
+        }
+      });
+
+      return res.status(200).json(deletedConversation);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: "Something Went Wrong" });

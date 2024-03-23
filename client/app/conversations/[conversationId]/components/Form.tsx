@@ -78,7 +78,7 @@ const Form = () => {
         toast.error("Something went wrong");
         console.log(error);
       });
-    console.log(data);
+    // console.log(data);
   };
 
   function handleUpload(result: any) {

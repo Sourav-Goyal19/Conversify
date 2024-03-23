@@ -14,7 +14,6 @@ interface IParams {
 
 const ConversationId = ({ params }: { params: IParams }) => {
   const [conversation, setConversation] = useState();
-  const user = useAppSelector((state) => state.user.user);
   const [messages, setMessages] = useState<any>([]);
 
   useEffect(() => {
@@ -46,7 +45,7 @@ const ConversationId = ({ params }: { params: IParams }) => {
     <div className=" lg:pl-80 h-full">
       <div className="flex flex-col h-full">
         <Header conversation={conversation} />
-        <Body messages={messages} />
+        <Body messages={messages} setMessages={setMessages} />
         <Form />
       </div>
     </div>

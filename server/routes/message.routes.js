@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../models/message");
 const Conversation = require("../models/conversation");
+const pusherServer = require("../services/pusher");
 
 router
   .post("/", async (req, res) => {
@@ -14,19 +15,38 @@ router
         image,
       });
 
-      // console.log("New Message 1", newMessage);
-
-      const populatedMessage = await Message.findById(newMessage?._id).populate(
-        "conversationId"
-      );
+      const populatedMessage = await Message.findById(newMessage?._id)
+        .populate("conversationId")
+        .populate("sender")
+        .populate("seen");
 
       const updatedConversation = await Conversation.findByIdAndUpdate(
         conversationId,
         { $push: { messages: newMessage._id } },
         { new: true }
+      )
+        .populate("messages")
+        .populate("userIds");
+
+      console.log(updatedConversation);
+
+      await pusherServer.trigger(
+        conversationId,
+        "messages:new",
+        populatedMessage
       );
 
-      // console.log("New Message 2", populatedMessage);
+      const lastMessage =
+        updatedConversation.messages[updatedConversation.messages.length - 1];
+
+      // await pusherServer.trigger(conversationId, "message:last", lastMessage);
+
+      updatedConversation.userIds.map((user) => {
+        pusherServer.trigger(user.email, "conversation:update", {
+          _id: conversationId,
+          messages: [lastMessage],
+        });
+      });
 
       res.status(200).json(populatedMessage);
     } catch (error) {
@@ -47,5 +67,4 @@ router
       res.status(500).json(error);
     }
   });
-
 module.exports = router;

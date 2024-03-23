@@ -16,7 +16,8 @@ interface MessageBoxProps {
 
 const MessageBox: React.FC<MessageBoxProps> = ({ isLast, data }) => {
   const user = useAppSelector((state) => state.user.user);
-  const isOwn = user?._id === data?.sender?._id;
+  const isOwn = user?._id == data?.sender?._id;
+  // console.log(user);
   const [isImageOpen, setIsImageOpen] = useState(false);
 
   const seenList = (data?.seen || [])

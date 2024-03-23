@@ -79,32 +79,3 @@ const io = require("socket.io")(server, {
     origin: "http://localhost:3000",
   },
 });
-
-io.on("connection", (socket) => {
-  console.log("Connected to socket.io");
-
-  socket.on("setup", (user) => {
-    socket.join(user?._id);
-    socket.emit("connected");
-    console.log("User Id", user?._id);
-  });
-
-  socket.on("join chat", (room) => {
-    socket.join(room);
-    console.log("user joined room " + room);
-  });
-
-  socket.on("new message", async (newMessageRecieved) => {
-    const conversation = newMessageRecieved?.conversationId;
-    console.log("Socket new Message", newMessageRecieved);
-    if (conversation?.userIds?.length < 2) {
-      return console.log("conversation.userIds not defined");
-    }
-
-    conversation?.userIds?.forEach((userId) => {
-      // if (userId === newMessageRecieved?.sender?._id) return;
-      console.log(userId);
-      socket.in(userId).emit("message recieved", newMessageRecieved);
-    });
-  });
-});

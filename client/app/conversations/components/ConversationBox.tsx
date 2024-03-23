@@ -19,8 +19,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   selected,
 }) => {
   const router = useRouter();
+  // console.log(data);
   const user = useAppSelector((state) => state.user.user);
-  console.log(data);
 
   const handleClick = useCallback(() => {
     router.push(`/conversations/${data._id}`);
@@ -28,7 +28,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
 
   const lastMessage = useMemo(() => {
     const messages = data.messages || [];
-    console.log(messages[messages.length - 1]);
+    // console.log(messages[messages.length - 1]);
     return messages[messages.length - 1];
   }, [data.messages]);
 
@@ -48,7 +48,11 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     if (!lastMessage) return false;
     const seenArray = lastMessage.seen || [];
     if (!user?._id) return false;
-    return seenArray.includes(user?._id);
+    const userIncluded = seenArray.find(
+      (seenUser: any) => seenUser?._id === user?._id
+    );
+    if (!userIncluded) return false;
+    return true;
   }, [lastMessage, user?._id]);
 
   const userProfileImage = useMemo(() => {
