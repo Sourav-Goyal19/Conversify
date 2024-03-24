@@ -21,15 +21,14 @@ async function handleLogin(req, res) {
   const { email, password } = req.body;
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
-    const thirtyDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
+    const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
     const cookieOptions = {
-      maxAge: thirtyDaysInMilliseconds,
+      maxAge: threeDaysInMilliseconds,
       httpOnly: true,
-      sameSite: "None",
       secure: true,
-      domain: ".conversify-server.onrender.com",
+      sameSite: "none",
+      partitioned: false,
     };
-
     res
       .status(200)
       .cookie("token", token, cookieOptions)
