@@ -62,7 +62,7 @@ export const AuthForm = () => {
     setIsLoading(true);
     if (variant === "REGISTER") {
       axios
-        .post("http://localhost:8000/auth/signup", data)
+        .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/signup`, data)
         .then((res) => {
           if (res.status === 200) {
             toast.success(res?.data.msg);
@@ -82,7 +82,7 @@ export const AuthForm = () => {
 
     if (variant === "LOGIN") {
       axios
-        .post("http://localhost:8000/auth/login", data)
+        .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, data)
         .then((res) => {
           if (res.status === 200) {
             toast.success(res?.data.msg);

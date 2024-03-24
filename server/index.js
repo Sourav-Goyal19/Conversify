@@ -69,6 +69,10 @@ app.get("/authorization", async (req, res) => {
   return res.status(200).json({ user, msg: "Authorized" });
 });
 
+app.get("/", (req, res) => {
+  return res.send("Hello World!");
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Server Started at ${PORT}`);
 });
