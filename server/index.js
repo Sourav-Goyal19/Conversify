@@ -32,7 +32,12 @@ app.use(
     secret: "SouravG",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: {
+      secure: true,
+      sameSite: "none",
+      maxAge: 3 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    },
   })
 );
 

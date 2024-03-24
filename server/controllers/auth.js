@@ -27,7 +27,6 @@ async function handleLogin(req, res) {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      partitioned: false,
     };
     res
       .status(200)
