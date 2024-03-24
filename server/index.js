@@ -20,19 +20,7 @@ const settingsRouter = require("./routes/settings.routes");
 
 passportConfig(passport);
 
-app.use(
-  cors({
-    origin: [
-      "*",
-      process.env.CLIENT_URL,
-      "https://newconversify.vercel.app",
-      "https://conversify-git-main-sourav-goyal.vercel.app",
-      "https://conversify-7wgzlz6q7-sourav-goyal.vercel.app",
-      "http://localhost:3000",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(
   session({
@@ -86,6 +74,6 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://newconversify.vercel.app/",
+    origin: "*", // Allow requests from any origin for Socket.IO
   },
 });
