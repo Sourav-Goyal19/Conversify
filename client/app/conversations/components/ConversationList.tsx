@@ -39,7 +39,7 @@ const ConversationList = () => {
         },
       })
       .then((res) => {
-        if (res.data.length < 1) return router.push("/users");
+        if (res.data.length < 1) return;
         setConversations(res.data);
       })
       .catch((err) => {
