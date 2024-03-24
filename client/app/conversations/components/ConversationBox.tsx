@@ -63,7 +63,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       }
     });
     return image[0] ? image[0] : image[1];
-  }, []);
+  }, [data, selected, user?._id, router]);
 
   return (
     <div
