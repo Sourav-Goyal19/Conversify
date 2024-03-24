@@ -38,7 +38,12 @@ async function handleLogin(req, res) {
 }
 
 async function handleLogout(req, res) {
-  res.clearCookie("token");
+  res.cookie("token", "", {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   res.status(200).json({ msg: "Logout Successful" });
 }
 
