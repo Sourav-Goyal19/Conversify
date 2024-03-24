@@ -13,7 +13,7 @@ async function handleSignUp(req, res) {
   if (user) {
     return res.status(200).json({ msg: "User Created Successfully" });
   } else {
-    return res.status(400).json({ msg: "Some Error Has Occured" });
+    return res.status(400).json({ msg: "Some Error Has Occurred" });
   }
 }
 
@@ -22,11 +22,14 @@ async function handleLogin(req, res) {
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
     const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-    // res;
+    // Set SameSite=None for cross-site cookie usage
     res
       .status(200)
       .cookie("token", token, {
         maxAge: thirtyDaysInMilliseconds,
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
       })
       .json({ msg: "Login Successful" });
   } catch (error) {
