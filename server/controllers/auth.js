@@ -23,7 +23,6 @@ async function handleLogin(req, res) {
     const token = await User.matchPasswordAndGenerateToken(email, password);
     const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("token", token, {
-      httpOnly: true,
       maxAge: thirtyDaysInMilliseconds,
     });
     res.status(200).json({ msg: "Login Successful" });
