@@ -18,7 +18,7 @@ interface ConversationListProps {
   intialItems: any[];
 }
 
-const ConversationList: React.FC<ConversationListProps> = () => {
+const ConversationList = () => {
   const { isOpen, conversationId } = useConversation();
   const [conversations, setConversations] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState([]);

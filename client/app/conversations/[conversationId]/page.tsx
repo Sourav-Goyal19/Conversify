@@ -13,6 +13,7 @@ interface IParams {
 }
 
 const ConversationId = ({ params }: { params: IParams }) => {
+  axios.defaults.withCredentials = true;
   const [conversation, setConversation] = useState();
   const [messages, setMessages] = useState<any>([]);
 

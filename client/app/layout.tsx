@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { ReduxProvider } from "@/redux/provider";
+import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  axios.defaults.withCredentials = true;
   return (
     <html lang="en">
       <body className={inter.className}>
