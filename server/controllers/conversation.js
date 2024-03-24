@@ -177,19 +177,24 @@ const handleSeen = async (req, res) => {
 const handleDeleteConversation = async (req, res) => {
   const { conversationId } = req.params;
   try {
-    const deletedConversation = await Conversation.findByIdAndDelete(
+    const existingConversation = await Conversation.findById(
       conversationId
     ).populate("userIds");
 
-    if (!deletedConversation)
+    if (!existingConversation)
       return res.status(400).json({ msg: "Invalid Id" });
 
-    deletedConversation.userIds.map((user) => {
+    const deletedConversation = await Conversation.deleteMany({
+      _id: conversationId,
+      userIds: existingConversation.userIds,
+    });
+
+    existingConversation.userIds.map((user) => {
       if (user.email) {
         pusherServer.trigger(
           user.email,
           "conversation:delete",
-          deletedConversation
+          existingConversation
         );
       }
     });

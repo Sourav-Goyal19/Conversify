@@ -88,12 +88,14 @@ const ConversationList = () => {
 
     const deletedConversationHandler = (deletedConversation: any) => {
       console.log(deletedConversation);
-      router.push("/conversations");
       setConversations((prev) => {
-        return prev.filter((conversation) => {
-          return conversation._id !== deletedConversation._id;
-        });
+        return [
+          ...prev.filter((convo) => convo?._id != deletedConversation?._id),
+        ];
       });
+      if (conversationId == deletedConversation?._id) {
+        router.push("/conversations");
+      }
     };
 
     const conversationUpdateHandler = (updatedConversation: any) => {
@@ -121,7 +123,7 @@ const ConversationList = () => {
       pusherClient.unbind("conversation:delete", deletedConversationHandler);
       pusherClient.unbind("conversation:update", conversationUpdateHandler);
     };
-  }, [pusherKey]);
+  }, [pusherKey, conversationId, router]);
 
   return (
     <>
