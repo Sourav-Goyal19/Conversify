@@ -21,16 +21,20 @@ async function handleLogin(req, res) {
   const { email, password } = req.body;
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
-    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-    // Set SameSite=None for cross-site cookie usage
+    const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
+    const cookieOptions = {
+      maxAge: threeDaysInMilliseconds,
+      httpOnly: true,
+      sameSite: "None",
+    };
+
+    if (req.secure || req.headers["x-forwarded-proto"] === "https") {
+      cookieOptions.secure = true;
+    }
+
     res
       .status(200)
-      .cookie("token", token, {
-        maxAge: thirtyDaysInMilliseconds,
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-      })
+      .cookie("token", token, cookieOptions)
       .json({ msg: "Login Successful" });
   } catch (error) {
     res.status(400).json({ msg: error.message });

@@ -24,16 +24,20 @@ export const AuthForm = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      try {
-        const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/authorization`;
-        const { data } = await axios.get(url, { withCredentials: true });
-        if (data) {
-          dispatch(setUser(data.user));
-          router.push("/users");
-        }
-      } catch (error) {
-        console.log("Error", error);
-      }
+      const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/authorization`;
+      await axios
+        .get(url, { withCredentials: true })
+        .then((res) => {
+          if (res.status === 200) {
+            dispatch(setUser(res.data.user));
+            router.push("/conversations");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          dispatch(setUser(null));
+          return;
+        });
     };
     getUser();
   }, []);
