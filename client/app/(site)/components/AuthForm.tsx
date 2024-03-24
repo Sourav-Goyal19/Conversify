@@ -85,6 +85,7 @@ export const AuthForm = () => {
         .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, data)
         .then((res) => {
           if (res.status === 200) {
+            console.log(res);
             toast.success(res?.data.msg);
             router.push("/users");
             setIsLoading(false);

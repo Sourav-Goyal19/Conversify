@@ -35,7 +35,7 @@ const UsersLayout = ({ children }: { children: React.ReactNode }) => {
                 console.log(err);
               });
           }
-        } else router.push("/");
+        }
       } catch (error) {
         console.log("Error", error);
       }

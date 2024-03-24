@@ -10,7 +10,6 @@ const cors = require("cors");
 const { getUser } = require("./services/auth");
 const conversationRouter = require("./routes/conversation.routes");
 const messageRouter = require("./routes/message.routes");
-const Conversation = require("./models/conversation");
 const passportConfig = require("./passport");
 const passport = require("passport");
 const session = require("express-session");
