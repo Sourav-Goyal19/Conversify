@@ -87,6 +87,8 @@ const ConversationList = () => {
     };
 
     const deletedConversationHandler = (deletedConversation: any) => {
+      console.log(deletedConversation);
+      router.push("/conversations");
       setConversations((prev) => {
         return prev.filter((conversation) => {
           return conversation._id !== deletedConversation._id;

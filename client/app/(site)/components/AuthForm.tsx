@@ -87,7 +87,7 @@ export const AuthForm = () => {
           if (res.status === 200) {
             console.log(res);
             toast.success(res?.data.msg);
-            router.push("/users");
+            router.push("/conversations");
             setIsLoading(false);
           }
         })
