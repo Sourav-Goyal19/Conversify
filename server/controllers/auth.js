@@ -21,16 +21,14 @@ async function handleLogin(req, res) {
   const { email, password } = req.body;
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
-    const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
+    const thirtyDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
     const cookieOptions = {
-      maxAge: threeDaysInMilliseconds,
+      maxAge: thirtyDaysInMilliseconds,
       httpOnly: true,
       sameSite: "None",
+      secure: true,
+      domain: ".conversify-server.onrender.com",
     };
-
-    if (req.secure || req.headers["x-forwarded-proto"] === "https") {
-      cookieOptions.secure = true;
-    }
 
     res
       .status(200)
