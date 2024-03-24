@@ -22,7 +22,8 @@ passportConfig(passport);
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://newconversify.vercel.app",
+    credentials: true,
   })
 );
 
