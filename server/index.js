@@ -20,7 +20,11 @@ const settingsRouter = require("./routes/settings.routes");
 
 passportConfig(passport);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.use(
   session({
