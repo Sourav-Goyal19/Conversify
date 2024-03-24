@@ -23,7 +23,14 @@ passportConfig(passport);
 
 app.use(
   cors({
-    origin: ["*", process.env.CLIENT_URL],
+    origin: [
+      "*",
+      process.env.CLIENT_URL,
+      "https://newconversify.vercel.app",
+      "https://conversify-git-main-sourav-goyal.vercel.app",
+      "https://conversify-7wgzlz6q7-sourav-goyal.vercel.app",
+      "http://localhost:3000",
+    ],
     credentials: true,
   })
 );
