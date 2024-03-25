@@ -10,7 +10,8 @@ function configurePassport() {
       {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "/auth/google/callback",
+        callbackURL:
+          "https://conversify-server.onrender.com/auth/google/callback",
       },
       async function (accessToken, refreshToken, profile, callback) {
         try {
