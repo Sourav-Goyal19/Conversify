@@ -104,18 +104,15 @@ const ConversationList = () => {
     };
 
     const conversationUpdateHandler = (updatedConversation: any) => {
-      console.log(updatedConversation);
-      setConversations((prev) => {
-        return prev.map((conversation: any) => {
-          if (conversation._id === updatedConversation._id) {
-            return {
-              ...conversation,
-              messages: updatedConversation.messages,
-            };
-          }
-          return conversation;
-        });
-      });
+      // console.log(updatedConversation);
+      const updateConversation: any = conversations.find(
+        (convo) => convo?._id == updatedConversation?._id
+      );
+      updateConversation.messages = updatedConversation.messages;
+      const allConversations = conversations.filter(
+        (convo) => convo?._id != updatedConversation?._id
+      );
+      setConversations([updateConversation, ...allConversations]);
     };
 
     pusherClient.bind("conversation:new", newConversationHandler);
