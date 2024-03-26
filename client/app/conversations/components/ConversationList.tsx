@@ -104,15 +104,18 @@ const ConversationList = () => {
     };
 
     const conversationUpdateHandler = (updatedConversation: any) => {
-      // console.log(updatedConversation);
-      const updateConversation: any = conversations.find(
+      // console.log(conversations);
+      const updateConversation = conversations.find(
         (convo) => convo?._id == updatedConversation?._id
       );
-      updateConversation.messages = updatedConversation.messages;
-      const allConversations = conversations.filter(
-        (convo) => convo?._id != updatedConversation?._id
-      );
-      setConversations([updateConversation, ...allConversations]);
+
+      if (updateConversation) {
+        updateConversation.messages = updatedConversation?.messages;
+        const allConversations = conversations.filter(
+          (convo) => convo?._id != updatedConversation?._id
+        );
+        setConversations([updateConversation, ...allConversations]);
+      }
     };
 
     pusherClient.bind("conversation:new", newConversationHandler);
@@ -125,7 +128,7 @@ const ConversationList = () => {
       pusherClient.unbind("conversation:delete", deletedConversationHandler);
       pusherClient.unbind("conversation:update", conversationUpdateHandler);
     };
-  }, [pusherKey, conversationId, router]);
+  }, [pusherKey, conversationId, router, conversations, user?._id]);
 
   return (
     <>
