@@ -105,7 +105,7 @@ const handleGettingAllConversations = async (req, res) => {
         },
       })
       .populate("userIds")
-      .sort({ lastMessageAt: 1 });
+      .sort({ lastMessageAt: -1 });
 
     return res.status(200).json(conversations);
   } catch (error) {

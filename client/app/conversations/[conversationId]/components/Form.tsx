@@ -19,6 +19,7 @@ const Form = () => {
   const { conversationId } = useConversation();
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const user = useAppSelector((state) => state.user.user);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
   const theme = document.documentElement.contains(
     document.querySelector(".dark")
   )
@@ -35,6 +36,10 @@ const Form = () => {
     defaultValues: {
       message: "",
     },
+  });
+
+  window.addEventListener("resize", (e) => {
+    setScreenSize(window.innerWidth);
   });
 
   window.addEventListener("click", (e) => {
@@ -110,7 +115,7 @@ const Form = () => {
             />
           </div>
         </Tippy>
-        <div className="absolute bottom-10">
+        <div className="absolute bottom-10 -left-12">
           {isPickerVisible && (
             <Picker
               data={data}
@@ -124,6 +129,8 @@ const Form = () => {
               theme={theme}
               icons="outline"
               previewPosition="none"
+              emojiButtonSize={screenSize <= 370 ? "30" : "36"}
+              emojiSize={screenSize <= 370 ? "20" : "24"}
             />
           )}
         </div>
