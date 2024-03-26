@@ -105,7 +105,7 @@ const Form = () => {
         <HiPhoto size={30} className="text-sky-500 cursor-pointer" />
       </CldUploadButton>
       <div className="relative">
-        <Tippy content="Ctrl + ," hideOnClick>
+        <Tippy content="Ctrl + ," hideOnClick touch={["hold", 1000]}>
           <div className="cursor-pointer text-sky-600 font-bold">
             <MdEmojiEmotions
               size={25}
@@ -146,7 +146,7 @@ const Form = () => {
           required={true}
           placeholder="Write a message"
         />
-        <Tippy content="Send" hideOnClick>
+        <Tippy content="Send" hideOnClick touch={["hold", 1000]}>
           <button
             type="submit"
             className="rounded-full p-3 bg-sky-500 cursor-pointer hover:bg-sky-600 transition dark:bg-primary dark:hover:bg-secondary "
