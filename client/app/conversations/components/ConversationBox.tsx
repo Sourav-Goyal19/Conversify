@@ -8,7 +8,6 @@ import { useAppSelector } from "@/redux/hooks";
 import Avatar from "@/components/Avatar";
 import io from "socket.io-client";
 import AvatarGroup from "@/components/AvatarGroup";
-import LoadingModal from "@/components/LoadingModal";
 
 interface ConversationBoxProps {
   data: any;
@@ -20,13 +19,10 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   selected,
 }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const user = useAppSelector((state) => state.user.user);
 
   const handleClick = useCallback(() => {
-    setIsLoading(true);
     router.push(`/conversations/${data._id}`);
-    setIsLoading(false);
   }, [router, data._id]);
 
   const lastMessage = useMemo(() => {
@@ -69,50 +65,47 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   }, [data, selected, user?._id, router]);
 
   return (
-    <>
-      {isLoading && <LoadingModal />}
-      <div
-        onClick={handleClick}
-        className={clsx(
-          "w-full relative flex items-center space-x-3 hover:bg-neutral-100 rounded-lg transition cursor-pointer p-3 dark:bg-primary dark:hover:bg-tertiary",
-          selected ? "bg-neutral-100" : "bg-white"
-        )}
-      >
-        {data?.isGroup ? (
-          <AvatarGroup users={data.userIds} />
-        ) : (
-          <Avatar image={userProfileImage} />
-        )}
-        <div className="min-w-0 flex-1">
-          <div className="focus:outline-none">
-            <div className="flex justify-between items-center mb-1">
-              <p className="text-base font-medium text-gray-900 dark:text-accent-3 capitalize">
-                {data.isGroup
-                  ? data.name
-                  : data.userIds.map((userId: any) =>
-                      userId?._id !== user?._id ? userId?.name : ""
-                    )}
-              </p>
-              {lastMessage?.createdAt && (
-                <p className="text-xs text-gray-400 font-light">
-                  {format(new Date(lastMessage.createdAt), "p")}
-                </p>
-              )}
-            </div>
-            <p
-              className={clsx(
-                "truncate text-sm",
-                hasSeen
-                  ? "text-gray-500 dark:text-gray-400"
-                  : "text-black dark:text-white font-medium"
-              )}
-            >
-              {lastMessageText}
+    <div
+      onClick={handleClick}
+      className={clsx(
+        "w-full relative flex items-center space-x-3 hover:bg-neutral-100 rounded-lg transition cursor-pointer p-3 dark:bg-primary dark:hover:bg-tertiary",
+        selected ? "bg-neutral-100" : "bg-white"
+      )}
+    >
+      {data?.isGroup ? (
+        <AvatarGroup users={data.userIds} />
+      ) : (
+        <Avatar image={userProfileImage} />
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="focus:outline-none">
+          <div className="flex justify-between items-center mb-1">
+            <p className="text-base font-medium text-gray-900 dark:text-accent-3 capitalize">
+              {data.isGroup
+                ? data.name
+                : data.userIds.map((userId: any) =>
+                    userId?._id !== user?._id ? userId?.name : ""
+                  )}
             </p>
+            {lastMessage?.createdAt && (
+              <p className="text-xs text-gray-400 font-light">
+                {format(new Date(lastMessage.createdAt), "p")}
+              </p>
+            )}
           </div>
+          <p
+            className={clsx(
+              "truncate text-sm",
+              hasSeen
+                ? "text-gray-500 dark:text-gray-400"
+                : "text-black dark:text-white font-medium"
+            )}
+          >
+            {lastMessageText}
+          </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
