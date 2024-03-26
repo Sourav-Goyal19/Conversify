@@ -11,7 +11,7 @@ import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/user/user/userSlice";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 
 interface ConversationListProps {

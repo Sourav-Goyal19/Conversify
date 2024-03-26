@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MessageBox from "./MessageBox";
 import axios from "axios";
 import { useAppSelector } from "@/redux/hooks";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 import { current } from "@reduxjs/toolkit";
 
