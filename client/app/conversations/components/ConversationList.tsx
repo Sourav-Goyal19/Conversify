@@ -32,20 +32,24 @@ const ConversationList = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
-        params: {
-          userId: user?._id,
-        },
-      })
-      .then((res) => {
-        if (res.data.length < 1) return;
-        setConversations(res.data);
-      })
-      .catch((err) => {
-        toast.error(err.msg);
-        console.log(err);
-      });
+    const fetchConversations = async () => {
+      if (user) {
+        await axios
+          .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
+            params: {
+              userId: user?._id,
+            },
+          })
+          .then((res) => {
+            if (res.data.length < 1) return;
+            setConversations(res.data);
+          })
+          .catch((err) => {
+            toast.error(err.msg);
+            console.log(err);
+          });
+      }
+    };
 
     const fetchUsers = async () => {
       try {
@@ -70,8 +74,9 @@ const ConversationList = () => {
         console.log("Error", error);
       }
     };
+    fetchConversations();
     fetchUsers();
-  }, []);
+  }, [user?._id]);
 
   useEffect(() => {
     if (!pusherKey) return;
