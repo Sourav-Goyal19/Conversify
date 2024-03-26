@@ -12,20 +12,23 @@ const handleNewMessage = async (req, res) => {
       image,
     });
 
-    const populatedMessage = await Message.findById(newMessage?._id)
-      .populate("conversationId")
-      .populate("sender")
-      .populate("seen");
-
     const updatedConversation = await Conversation.findByIdAndUpdate(
       conversationId,
-      { $push: { messages: newMessage._id } },
+      {
+        $push: { messages: newMessage._id },
+        lastMessageAt: new Date(),
+      },
       { new: true }
     )
       .populate("messages")
       .populate("userIds");
 
-    console.log(updatedConversation);
+    const populatedMessage = await Message.findById(newMessage?._id)
+      .populate("conversationId")
+      .populate("sender")
+      .populate("seen");
+
+    // console.log(updatedConversation);
 
     await pusherServer.trigger(
       conversationId,
