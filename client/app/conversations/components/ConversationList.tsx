@@ -83,6 +83,7 @@ const ConversationList = () => {
     pusherClient.subscribe(pusherKey);
 
     const newConversationHandler = (newConversation: any) => {
+      console.log(newConversation);
       setConversations((prev) => {
         if (find(prev, { _id: newConversation?._id })) {
           return prev;
