@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./routes/auth.routes");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const { getUser } = require("./services/auth");
+const { getUser, setUser } = require("./services/auth");
 const conversationRouter = require("./routes/conversation.routes");
 const messageRouter = require("./routes/message.routes");
 const passportConfig = require("./services/passport");
@@ -63,6 +63,37 @@ app.use("/api/messages", messageRouter);
 app.use("/users", usersRouter);
 app.use("/api/conversations", conversationRouter);
 app.use("/api/settings", settingsRouter);
+
+app
+  .get(
+    "/google/callback",
+    passport.authenticate("google", {
+      successRedirect: "/auth/success",
+      failureRedirect: "/auth/failure",
+    })
+  )
+  .get("/success", async (req, res) => {
+    if (req.user) {
+      const user = await User.findOne({ email: req.user.emails[0].value });
+      const token = setUser(user);
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+      res.redirect(process.env.CLIENT_URL);
+    }
+  })
+  .get("/failure", (req, res) => {
+    return res.redirect(process.env.CLIENT_URL);
+  })
+  .get("/login/success", async (req, res) => {
+    if (req.user) {
+      const user = await User.findOne({ email: req.user.emails[0].value });
+      res.status(200).json({ msg: "User Logged In successfully", user: user });
+    } else {
+      res.status(401).json({ msg: "User Not Found" });
+    }
+  });
 
 app.get("/authorization", async (req, res) => {
   const userToken = req.cookies?.token;
