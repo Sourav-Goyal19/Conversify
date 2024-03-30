@@ -8,7 +8,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
 import { RxCross2 } from "react-icons/rx";
-import { ReplyContext } from "../page";
+import { useReplyContext } from "./ReplyMessageContext";
 
 interface BodyProps {
   messages: any[];
@@ -19,7 +19,7 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
   // console.log(messages);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { conversationId } = useConversation();
-  const { replyMessage, setReplyMessage } = useContext(ReplyContext);
+  const { replyMessage, setReplyMessage } = useReplyContext();
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {

@@ -6,17 +6,15 @@ import { createContext, useEffect, useState } from "react";
 import Header from "./components/Header";
 import Body from "./components/Body";
 import Form from "./components/Form";
+import ReplyMessageContext from "./components/ReplyMessageContext";
 
 interface IParams {
   conversationId: string;
 }
 
-export const ReplyContext = createContext<any>(null);
-
 const ConversationId = ({ params }: { params: IParams }) => {
   axios.defaults.withCredentials = true;
   const [conversation, setConversation] = useState();
-  const [replyMessage, setReplyMessage] = useState<any>(null);
   const [messages, setMessages] = useState<any>([]);
 
   useEffect(() => {
@@ -47,11 +45,11 @@ const ConversationId = ({ params }: { params: IParams }) => {
   return conversation ? (
     <div className=" lg:pl-80 h-full">
       <div className="flex flex-col h-full">
-        <ReplyContext.Provider value={{ replyMessage, setReplyMessage }}>
+        <ReplyMessageContext>
           <Header conversation={conversation} />
           <Body messages={messages} setMessages={setMessages} />
           <Form />
-        </ReplyContext.Provider>
+        </ReplyMessageContext>
       </div>
     </div>
   ) : (

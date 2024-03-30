@@ -14,13 +14,13 @@ import Tippy from "@tippyjs/react";
 import { useAppSelector } from "@/redux/hooks";
 import { CldUploadButton } from "next-cloudinary";
 import toast from "react-hot-toast";
-import { ReplyContext } from "../page";
+import { useReplyContext } from "./ReplyMessageContext";
 
 const Form = () => {
   const { conversationId } = useConversation();
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const user = useAppSelector((state) => state.user.user);
-  const { replyMessage, setReplyMessage } = useContext(ReplyContext);
+  const { replyMessage, setReplyMessage } = useReplyContext();
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const theme = document.documentElement.contains(
     document.querySelector(".dark")
