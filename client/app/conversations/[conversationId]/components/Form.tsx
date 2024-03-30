@@ -9,16 +9,18 @@ import { HiPhoto } from "react-icons/hi2";
 import MessageInput from "./MessageInput";
 import { HiPaperAirplane } from "react-icons/hi2";
 import { MdEmojiEmotions } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Tippy from "@tippyjs/react";
 import { useAppSelector } from "@/redux/hooks";
 import { CldUploadButton } from "next-cloudinary";
 import toast from "react-hot-toast";
+import { ReplyContext } from "../page";
 
 const Form = () => {
   const { conversationId } = useConversation();
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const user = useAppSelector((state) => state.user.user);
+  const { replyMessage, setReplyMessage } = useContext(ReplyContext);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const theme = document.documentElement.contains(
     document.querySelector(".dark")
@@ -70,11 +72,15 @@ const Form = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data: FieldValues) => {
     setValue("message", "", { shouldValidate: true });
+    // console.log(replyMessage);
+    const rm = replyMessage;
+    setReplyMessage(null);
     axios
       .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/messages`, {
         ...data,
         conversationId,
         sender: user?._id,
+        replyMessage: rm,
       })
       .then((res) => {
         // socket.emit("new message", res.data);
@@ -82,6 +88,9 @@ const Form = () => {
       .catch((error) => {
         toast.error("Something went wrong");
         console.log(error);
+      })
+      .finally(() => {
+        setReplyMessage(null);
       });
     // console.log(data);
   };

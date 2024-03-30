@@ -1,13 +1,14 @@
 "use client";
 
 import useConversation from "@/hooks/useConversation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MessageBox from "./MessageBox";
 import axios from "axios";
 import { useAppSelector } from "@/redux/hooks";
 import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
-import { current } from "@reduxjs/toolkit";
+import { RxCross2 } from "react-icons/rx";
+import { ReplyContext } from "../page";
 
 interface BodyProps {
   messages: any[];
@@ -18,6 +19,7 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
   // console.log(messages);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { conversationId } = useConversation();
+  const { replyMessage, setReplyMessage } = useContext(ReplyContext);
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
         }
       )
       .then((res) => {
-        console.log("Seen Response", res);
+        // console.log("Seen Response", res);
       })
       .catch((err) => {
         console.log("Seen Error", err);
@@ -75,6 +77,12 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
     };
   }, [conversationId]);
 
+  window.addEventListener("keydown", (e) => {
+    if (e.key == "Escape") {
+      setReplyMessage(null);
+    }
+  });
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, setMessages]);
@@ -87,9 +95,28 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
             isLast={i === messages.length - 1}
             key={i}
             data={message}
+            replyMessage={replyMessage}
+            setReplyMessage={setReplyMessage}
           />
         ))}
       </div>
+      {replyMessage && (
+        <div className="sticky bottom-0 flex border-t border-gray-300 bg-white dark:border-slate-800">
+          <div className="flex-1 flex bg-neutral-100 h-11 overflow-hidden dark:bg-tertiary dark:text-accent-1">
+            <div className="h-full w-1 bg-blue-400 rounded-xl"></div>
+            <div className="pl-3 p-1 h-full w-full overflow-hidden select-none whitespace-nowrap flex items-center text-ellipsis">
+              {replyMessage.body}
+            </div>
+          </div>
+          <div className="p-2 dark:bg-secondary dark:text-accent-3">
+            <RxCross2
+              size={26}
+              onClick={() => setReplyMessage(null)}
+              cursor={"pointer"}
+            />
+          </div>
+        </div>
+      )}
       <div ref={bottomRef} />
     </div>
   );

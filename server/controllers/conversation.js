@@ -1,4 +1,3 @@
-const express = require("express");
 const Conversation = require("../models/conversation");
 const Message = require("../models/message");
 const pusherServer = require("../services/pusher");
@@ -155,7 +154,8 @@ const handleSeen = async (req, res) => {
     )
       .populate("seen")
       .populate("sender")
-      .populate("conversationId");
+      .populate("conversationId")
+      .populate("replyMessage");
 
     await pusherServer.trigger(conversationId, "conversation:update", {
       _id: conversationId,

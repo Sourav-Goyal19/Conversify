@@ -12,9 +12,6 @@ const Avatar = ({ image, online }: { image: any; online?: boolean }) => {
           sizes="100%"
         />
       </div>
-      {online && (
-        <span className="absolute block top-0 right-0 bg-green-500 ring-2 ring-white rounded-full h-2 w-2 md:h-3 md:w-3" />
-      )}
     </div>
   );
 };
