@@ -76,4 +76,49 @@ const handleAllMessagesForConversation = async (req, res) => {
   }
 };
 
-module.exports = { handleNewMessage, handleAllMessagesForConversation };
+const handleDeleteMessage = async (req, res) => {
+  const { messageId } = req.params;
+  try {
+    const deletedMessage = await Message.findByIdAndDelete(messageId, {
+      new: true,
+    });
+
+    console.log("Deleted Message", deletedMessage);
+
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      deletedMessage.conversationId,
+      {
+        $pull: { messages: { _id: messageId } },
+      },
+      { new: true }
+    )
+      .populate("messages")
+      .populate("userIds");
+
+    const lastMessage =
+      updatedConversation.messages[updatedConversation.messages.length - 1];
+
+    updatedConversation.userIds.map((user) => {
+      pusherServer.trigger(user.email, "conversation:update", {
+        _id: deletedMessage.conversationId,
+        messages: [lastMessage],
+      });
+    });
+
+    updatedConversation.userIds.map((user) => {
+      pusherServer.trigger(user.email, "message:delete", {
+        _id: deletedMessage._id,
+      });
+    });
+
+    res.status(200).json("Message deleted successfully");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+module.exports = {
+  handleNewMessage,
+  handleAllMessagesForConversation,
+  handleDeleteMessage,
+};
