@@ -7,7 +7,6 @@ import axios from "axios";
 import { useAppSelector } from "@/redux/hooks";
 import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
-import { RxCross2 } from "react-icons/rx";
 import { useReplyContext } from "./ReplyMessageContext";
 
 interface BodyProps {
@@ -100,23 +99,6 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
           />
         ))}
       </div>
-      {replyMessage && (
-        <div className="sticky bottom-0 flex border-t border-gray-300 bg-white dark:border-slate-800">
-          <div className="flex-1 flex bg-neutral-100 h-11 overflow-hidden dark:bg-tertiary dark:text-accent-1">
-            <div className="h-full w-1 bg-blue-400 rounded-xl"></div>
-            <div className="pl-3 p-1 h-full w-full overflow-hidden select-none whitespace-nowrap flex items-center text-ellipsis">
-              {replyMessage.body}
-            </div>
-          </div>
-          <div className="p-2 dark:bg-secondary dark:text-accent-3">
-            <RxCross2
-              size={26}
-              onClick={() => setReplyMessage(null)}
-              cursor={"pointer"}
-            />
-          </div>
-        </div>
-      )}
       <div ref={bottomRef} />
     </div>
   );
