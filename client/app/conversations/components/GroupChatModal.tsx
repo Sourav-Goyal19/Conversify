@@ -61,8 +61,8 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
         } else {
           toast.success("Group Created Successfully");
         }
-        router.refresh();
         router.push(`/conversations/${res.data._id}`);
+        router.refresh();
         onClose();
       })
       .catch((err) => {
