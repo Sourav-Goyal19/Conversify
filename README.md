@@ -2,7 +2,7 @@
 
 Explore Conversify live [here](https://newconversify.vercel.app/)
 
-Conversify is a feature-rich chat application built for personal growth and enhanced communication experiences. This application leverages cutting-edge technologies such as NEXT JS, NODE JS, EXPRESS JS, MONGO DB, and TYPESCRIPT to provide users with a seamless platform for interactive conversations.
+Conversify is a feature-rich chat application designed for seamless communication experiences. With real-time messaging, group conversations, customizable themes, and Google authentication, Conversify offers a dynamic platform for enhanced connectivity and personal growth. Join the conversation today!
 
 ## Features
 
