@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/user/user/userSlice";
 import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
+import ConversationSkeleton from "./conversationSkeleton";
 
 interface ConversationListProps {
   intialItems: any[];
@@ -26,6 +27,7 @@ const ConversationList = () => {
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const router = useRouter();
+  const skeletons = 10;
 
   const pusherKey = useMemo(() => {
     return user?.email;
@@ -151,18 +153,22 @@ const ConversationList = () => {
             </div>
             <div
               onClick={() => setIsGroupModalOpen(true)}
-              className="rounded-full p-2 bg-gray-100 text-gray-600 cursor-pointer hover:opacity-75 transition dark:bg-secondary dark:text-accent-1 dark:ring-slate-300"
+              className="rounded-full p-2 bg-gradient-to-br from-blue-400 to-blue-600 text-slate-200 cursor-pointer hover:opacity-75 transition dark:bg-secondary dark:text-accent-1 dark:ring-slate-300"
             >
               <MdOutlineGroupAdd size={22} />
             </div>
           </div>
-          {conversations.map((item, index) => (
-            <ConversationBox
-              key={index}
-              data={item}
-              selected={conversationId == item?._id}
-            />
-          ))}
+          {conversations.length > 0
+            ? conversations.map((item, index) => (
+                <ConversationBox
+                  key={index}
+                  data={item}
+                  selected={conversationId === item?._id}
+                />
+              ))
+            : [...Array(skeletons)].map((_, index) => (
+                <ConversationSkeleton key={index} />
+              ))}
         </div>
       </aside>
     </>

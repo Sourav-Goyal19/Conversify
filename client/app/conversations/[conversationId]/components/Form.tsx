@@ -177,7 +177,7 @@ const Form = () => {
           <Tippy content="Send" hideOnClick touch={["hold", 1000]}>
             <button
               type="submit"
-              className="rounded-full p-3 bg-sky-500 cursor-pointer hover:bg-sky-600 transition dark:bg-primary dark:hover:bg-secondary "
+              className="rounded-full p-3 bg-gradient-to-br from-blue-400 to-blue-600 cursor-pointer hover:to-blue-700 hover:from-blue-500 transition dark:bg-primary dark:hover:bg-secondary"
             >
               <HiPaperAirplane size={18} className="text-white" />
             </button>

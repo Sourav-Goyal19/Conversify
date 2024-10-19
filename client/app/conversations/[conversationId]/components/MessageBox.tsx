@@ -115,7 +115,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
               className={clsx(
                 "text-sm w-fit relative",
                 isOwn
-                  ? "bg-sky-500 text-white"
+                  ? "bg-gradient-to-br from-blue-400 to-blue-600 text-white"
                   : "bg-gray-100 dark:bg-primary dark:text-accent-3",
                 data?.image ? "rounded-md p-0" : "rounded-md py-2 px-3"
               )}
