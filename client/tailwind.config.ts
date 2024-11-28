@@ -23,6 +23,10 @@ const config: Config = {
         "accent-3": "#e5e7eb",
         "accent-4": "#ABCFF0",
       },
+      animation: {
+        sketch: "sketch 0.5s ease-out",
+        blowup: "blowup 0.5s ease-out",
+      },
     },
   },
   plugins: [
